@@ -1,0 +1,28 @@
+{
+  "name": "eink-dashboard",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "format": "prettier --write .",
+    "preview": "vite preview",
+    "snapshot": "tsx ./scripts/snap.ts",
+    "start": "deno run --allow-net --allow-read --allow-run ./serve.ts"
+  },
+  "dependencies": {
+    "capture-website": "4.1.0",
+    "solid-js": "^1.8.20"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "express": "4.19.2",
+    "prettier": "3.3.3",
+    "ts-node": "10.9.2",
+    "tsx": "4.17.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1",
+    "vite-plugin-solid": "^2.10.2"
+  }
+}
