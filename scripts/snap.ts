@@ -8,9 +8,11 @@ const { IMAGE_KIND = "airquality", ORIGIN = "http://localhost:5173" } =
 
 async function main({ origin, kind }: { origin: string; kind: string }) {
   const destFilename = `./public/${kind}.png`;
-  await cw.file(`${origin}/?kind=${kind}&landscape=1`, destFilename, {
-    width: 600,
-    height: 800,
+  await cw.file(`${origin}/?kind=${kind}`, destFilename, {
+    // width: 600,
+    // height: 800,
+    width: 820,
+    height: 1200,
     element: "#root",
     overwrite: true,
     delay: 5,

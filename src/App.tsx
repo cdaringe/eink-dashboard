@@ -16,13 +16,10 @@ function App() {
   });
   return (
     <>
-      <div style={{ position: "fixed", top: 0, right: 0 }}>
-        {new Date().toISOString()}
-      </div>
       {kind === "cat" ? (
         <CatImage />
       ) : kind === "airquality" ? (
-        <AirQuality landscape={isLandscape} />
+        <AirQuality />
       ) : kind === "onion" ? (
         <p>onion</p>
       ) : (

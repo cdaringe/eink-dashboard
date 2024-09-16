@@ -1,0 +1,45 @@
+#panel_grid {
+  display: grid;
+  grid-template-rows: 300px 1fr 1fr 30px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+  "panel_1 panel_1"
+  "panel_2 panel_3"
+  "panel_4 panel_4"
+  "panel_header panel_header";
+  height: 1200px;
+  width: 820px;
+}
+
+#panel_grid iframe {
+  border: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#panel_header {
+  padding: 2px;
+  grid-area: panel_header;
+  display: flex;
+  justify-content: space-between;
+}
+
+#panel_logo {
+  height: 100%;
+}
+
+#panel_1 {
+  grid-area: panel_1;
+}
+
+#panel_2 {
+  grid-area: panel_2;
+}
+
+#panel_2 {
+  grid-area: panel_3;
+}
+
+#panel_4 {
+  grid-area: panel_4;
+}

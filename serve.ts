@@ -1,7 +1,12 @@
-import { dashkinds } from "./src/common.ts";
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const child_process = require('child_process');
+const { dashkinds } = require('./src/common');
+
 const randIndex = (n: number) => Math.floor(Math.random() * n);
 
-Deno.serve(async (req) => {
+const server = http.createServer(async (req, res) => {
   const pathnameParts = new URL(req.url).pathname
     .split("/")
     .map((it) => it.toLowerCase().trim())
@@ -14,9 +19,15 @@ Deno.serve(async (req) => {
           ? p2
           : dashkinds[randIndex(dashkinds.length)]!;
       const relativeFilename = `./public/${kind}.png`;
+      const fileSize = (await Deno.stat(relativeFilename)).size;
       const file = await Deno.open(relativeFilename, { read: true });
       await file.lock();
-      return new Response(file.readable);
+      return new Response(file.readable, {
+        headers: {
+          "Content-Type": "image/png",
+          "Content-Length": fileSize.toString(),
+        }
+      });
     }
     default: {
       if (req.headers.get("accept")?.match(/html/i)) {
@@ -63,7 +74,9 @@ async function runSnapWorkflow() {
     await sleep(60_000 * 60);
   } finally {
     devServerProcess?.kill("SIGKILL");
-    setTimeout(runSnapWorkflow, 1000 /*ms / s*/ * 60 /*s/min */ * 59 /* min */);
+    const intervalMs = 1000 /*ms / s*/ * 60 /*s/min */ * 59; /* min */
+    // const intervalMs = 1000 * 60;
+    setTimeout(runSnapWorkflow, intervalMs);
   }
 }
 
