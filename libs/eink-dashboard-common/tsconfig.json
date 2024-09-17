@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "files": [],
+  "references": [
+    { "path": "../../tsconfig.node.json" }
+  ]
+}

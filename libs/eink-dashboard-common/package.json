@@ -1,0 +1,4 @@
+{
+  "name": "@eink-dashboard/common",
+  "main": "./index.ts"
+}

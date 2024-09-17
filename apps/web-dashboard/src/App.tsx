@@ -1,6 +1,6 @@
 import { createEffect } from "solid-js";
 import "./App.css";
-import { Dashkind } from "./common";
+import { Dashkind } from "../../../libs/eink-dashboard-common";
 import { AirQuality } from "./components/AirQuality";
 import CatImage from "./components/CatImage";
 
