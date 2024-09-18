@@ -8,9 +8,10 @@ const dockerBuild: Task =
     hostTags.map((it) => `-t ${it}`).join(" ")
   } .`;
 
-const dockerComposeRunBaseCmd = `docker-compose up --build --force-recreate --remove-orphans`
+const dockerComposeRunBaseCmd =
+  `docker-compose up --build --force-recreate --remove-orphans`;
 const dockerRun: Task = {
-  fn: ({ sh }) => sh(dockerComposeRunBaseCmd)
+  fn: ({ sh }) => sh(dockerComposeRunBaseCmd),
 };
 
 const format: Task = `deno fmt`;

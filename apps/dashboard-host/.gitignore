@@ -1,1 +1,4 @@
 dist
+public/**/*.png
+public/**/*.jpg
+public/**/*.jpeg

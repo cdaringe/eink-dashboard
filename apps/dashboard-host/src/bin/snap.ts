@@ -2,71 +2,51 @@ import cw from "capture-website";
 import os from "os";
 import cp from "child_process";
 import { setTimeout } from "timers/promises";
-import http from "http";
-import path from "path";
-import serveHandler from "serve-handler";
 
-const log = (msg: string) => console.log(`[snapshot]: ${msg}`);
-
-const { PORT_STATIC = "8001" } = process.env;
-
-const port = Number(PORT_STATIC);
-
-const webDashboardDirname = path.resolve(process.cwd(), "dist/web-dashboard");
+const log = (msg: string) =>
+  console.log(`[snapshot (${new Date().toISOString()})]: ${msg}`);
 
 const isMacOs = os.version().match(/darwin/i);
 
 const {
-  NODE_ENV,
   IMAGE_KIND = "airquality",
+  PORT = "8000",
 } = process.env;
 
-const isProduction = NODE_ENV?.match(/prod/i);
-
-async function createServer({ port }: { port: number }) {
-  const server = http.createServer(function onRequest(req, res) {
-    serveHandler(req, res, {
-      public: webDashboardDirname,
-    });
-  });
-  await new Promise<void>((res) => server.listen(port, "0.0.0.0", () => res()));
-  return server;
-}
-
 async function main({ port, kind }: { port: number; kind: string }) {
-  log(
-    `starting snapshot (${
-      JSON.stringify({ isProduction, webDashboardDirname })
-    })}`,
-  );
-  const server = await createServer({ port });
-  const origin = `http://localhost:${port}`;
-  log(`static server started on ${origin}`);
-  const destFilename = `./public/${kind}.png`;
+  log('starting snapshot');
+  const destColorFilename = `./public/${kind}-color.png`;
+  const destGrayFilename = `./public/${kind}.png`;
   await setTimeout(10_000);
-  await cw.file(`${origin}/?kind=${kind}`, destFilename, {
+  await cw.file(`http://localhost:${port}/?kind=${kind}`, destColorFilename, {
     width: 820,
     height: 1200,
     element: "#root",
     overwrite: true,
-    delay: 5,
+    delay: 20,
     scaleFactor: isMacOs ? 1 : undefined,
     timeout: 60_000 * 2,
     launchOptions: {
-      headless: true,
+      headless: 'new',
       args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox'
-      ]
-    }
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+      ],
+      // // @warn guess n check hack
+      // env: {
+      //   TZ: "America/Los_Angeles",
+      // }
+    },
   });
-  log(`snapshot saved to ${destFilename}`);
-  cp.execSync(`convert ${destFilename} -depth 8 -colors 256 ${destFilename}`);
+  log(`snapshot saved to ${destColorFilename}`);
+  cp.execSync(`convert ${destColorFilename} -depth 8 -colors 256 ${destGrayFilename}`);
+  [destColorFilename, destGrayFilename].forEach(filename => {
+    cp.execSync(`chmod ugo+rw ${filename}`);
+  });
   log("converted to 256 colors");
-  server?.close();
 }
 
-main({ kind: IMAGE_KIND, port }).then(
+main({ kind: IMAGE_KIND, port: Number(PORT) }).then(
   () => log("complete"),
   (err) => log(String(err)),
 );

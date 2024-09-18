@@ -1,0 +1,25 @@
+diff --git a/index.js b/index.js
+index 6bc07e98dd4520f84f803ced0f7abd0a15ae04b4..fb6ac2a4d3e2ec876fb1f2f1f8d69a41d65690f2 100644
+--- a/index.js
++++ b/index.js
+@@ -7,6 +7,8 @@ import puppeteer, {KnownDevices} from 'puppeteer';
+ import toughCookie from 'tough-cookie';
+ import {PuppeteerBlocker} from '@cliqz/adblocker-puppeteer';
+ 
++const TZ = process.env.TZ;
++
+ const isUrl = string => /^(https?|file):\/\/|^data:/.test(string);
+ 
+ const assert = (value, message) => {
+@@ -157,6 +159,11 @@ const internalCaptureWebsite = async (input, options) => {
+ 		browser = options._browser || await puppeteer.launch(launchOptions);
+ 		page = await browser.newPage();
+ 
++    // @warn chrome not getting correct TZ from os in docker :/
++    if (TZ) {
++      await page.emulateTimezone(TZ);
++    }
++
+ 		if (options.blockAds) {
+ 			const blocker = await PuppeteerBlocker.fromPrebuiltFull(fetch, {
+ 				path: 'engine.bin',

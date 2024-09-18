@@ -22,7 +22,16 @@ function App() {
         ? <AirQuality />
         : kind === "onion"
         ? <p>onion</p>
-        : <h1>{`Not found (kind: ${kind})`}</h1>}
+        : (
+          <>
+            <h4>Welcome</h4>
+            <ul>
+              <li>
+                <a href="/?kind=airquality">airquality</a>
+              </li>
+            </ul>
+          </>
+        )}
     </>
   );
 }

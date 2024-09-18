@@ -25,3 +25,4 @@ target
 ui
 dist
 .wireit
+apps/dashboard-host/public

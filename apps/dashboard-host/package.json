@@ -6,7 +6,7 @@
     "build:esbuild:host": "esbuild src/bin/host.ts --bundle --platform=node --outfile=dist/bin/host.js",
     "build:esbuild:snap": "esbuild src/bin/snap.ts --bundle --platform=node --outfile=dist/bin/snap.js",
     "build": "wireit",
-    "dev": "wireit"
+    "start": "wireit"
   },
   "wireit": {
     "copy:webapp": {
@@ -21,11 +21,11 @@
       ],
       "command": "mkdir -p dist && cp -r ../web-dashboard/dist/ ./dist/web-dashboard && ls -al ./dist/web-dashboard"
     },
-    "dev": {
+    "start": {
       "dependencies": [
         "build"
       ],
-      "command": "tsx src/bin/host.ts"
+      "command": "node ./dist/bin/host.js"
     },
     "typecheck": {
       "command": "tsc --noEmit",

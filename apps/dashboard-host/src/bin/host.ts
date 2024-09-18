@@ -2,15 +2,20 @@ import http from "http";
 import fs from "fs/promises";
 import child_process from "child_process";
 import { dashkinds } from "@eink-dashboard/common";
+import path from "path";
+import serveHandler from "serve-handler";
 
 const SNAP_SCRIPT_PATH = `${__dirname}/snap.js`;
 const { PORT = "8000", SNAP_DURATION_S = String(60 * 60) } = process.env;
 
-const log = (msg: string) => console.log(`[edh]: ${msg}`);
+const log = (msg: string) =>
+  console.log(`[edh ${new Date().toISOString()}]: ${msg}`);
 const port = Number(PORT);
 const intervalMs = 1000 * Number(SNAP_DURATION_S);
 
 const randIndex = (n: number) => Math.floor(Math.random() * n);
+const webDashboardDirname = path.resolve(process.cwd(), "dist/web-dashboard");
+// const publicDirname = path.resolve(process.cwd(), "public");
 
 const server = http.createServer(async (req, res) => {
   const pathnameParts = req.url!
@@ -31,21 +36,14 @@ const server = http.createServer(async (req, res) => {
       log(`serving ${kind}.png to ${req.socket.remoteAddress ?? "unknown"}`);
       return file.createReadStream().pipe(res, { end: true });
     }
+    case "public": {
+      // log(`serving public dir ${publicDirname} to ${req.socket.remoteAddress ?? "unknown"}`);
+      return serveHandler(req, res);
+    }
     default: {
-      const isHtml = req.headers.accept?.match(/html/i);
-      res.setHeader("content-type", isHtml ? "text/html" : "application/json");
-      res.statusCode = 404;
-      if (isHtml) {
-        res.end(
-          `<html>
-          <body>
-            <h1>Not found</h1>
-            <p>Did you mean to access /dashboards/{${dashkinds.join("|")}}
-          </body>
-        </html>`,
-        );
-      }
-      return res.end('{ "status": "not found" }');
+      return serveHandler(req, res, {
+        public: webDashboardDirname,
+      });
     }
   }
 });
@@ -77,6 +75,7 @@ async function runSnapWorkflow() {
     console.error(`failed: ${error}`);
   } finally {
     proc.kill(9);
+    log(`next snapshot in ${SNAP_DURATION_S} seconds (${intervalMs} ms)`);
     setTimeout(runSnapWorkflow, intervalMs);
   }
 }

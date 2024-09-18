@@ -7,5 +7,10 @@
     "del-cli": "5.1.0",
     "wireit": "0.14.9"
   },
-  "packageManager": "pnpm@9.10.0"
+  "packageManager": "pnpm@9.10.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "capture-website": "patches/capture-website.patch"
+    }
+  }
 }
