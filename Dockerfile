@@ -1,35 +1,50 @@
-from node:22-slim as builder-system
+from node:22-slim
+env PNPM_HOME="/pnpm"
+env PATH="$PNPM_HOME:$PATH"
 workdir /app
-env LANG en_US.UTF-8
+env LANG=en_US.UTF-8
+run corepack enable
 
 # sys deps
 run apt-get update && apt-get install curl gnupg -y \
   && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
   && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
   && apt-get update \
-  && apt-get install google-chrome-stable -y --no-install-recommends \
+  && apt-get install -y --no-install-recommends \
+    fonts-ipafont-gothic \
+    fonts-wqy-zenhei \
+    fonts-thai-tlwg \
+    fonts-khmeros \
+    fonts-kacst \
+    fonts-freefont-ttf \
+    dbus \
+    imagemagick \
+  && apt-get install google-chrome-stable tree -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
-
-from builder-system as builder
-
-run npm i -g pnpm@8 && pnpm --version
 # copy in workspace installation minimum
-copy package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-# copy in all of the minimum package.json files to ensure that the dependencies are installed
-copy apps/dashboard-host/puppeteer.config.cjs ./apps/dashboard-host/
-copy apps/dashboard-host/package.json ./apps/dashboard-host/
-copy libs/eink-dashboard-common/package.json ./apps/eink-dashboard-common/
+run chown -R node:node /app
+user node
+copy --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# install env flags
-env PUPPETEER_CHROME_SKIP_DOWNLOAD true
-env PUPPETEER_FIREFOX_SKIP_DOWNLOAD true
-env PUPPETEER_CHROME_HEADLESS_SHELL_SKIP_DOWNLOAD true
+# copy in all of the minimum package.json files to ensure that the dependencies are installed
+copy --chown=node:node patches/ ./patches/
+copy --chown=node:node apps/dashboard-host/package.json ./apps/dashboard-host/
+copy --chown=node:node apps/web-dashboard/package.json ./apps/web-dashboard/
+copy --chown=node:node libs/eink-dashboard-common/package.json ./libs/eink-dashboard-common/
+run tree
 
 # install
-run pnpm install
+run --mount=type=cache,id=pnpm,target=/pnpm/store NODE_ENV=development pnpm install --frozen-lockfile
+# @warn this version must match that in apps/dashboard-host/package.json!
+run set -x && pnpm dlx puppeteer@23.3.1 install chrome --install-deps
 
 # copy in the rest of the files
-copy ./ .
-run ls -al . && ls -al apps/dashboard-host && cd apps/dashboard-host && npm run build
+copy --chown=node:node ./ .
+
+# build
+run pnpm -r run build
+
+workdir /app/apps/dashboard-host
+env NODE_ENV=production
 cmd ["node", "dist/bin/host.js"]

@@ -1,29 +1,19 @@
-## Usage
+# eink-dashboard
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+Applications to support generating and hosting content for an `e-ink` dashboard.
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+## usage
 
-## Available Scripts
+This project is largely meant to be _forked_, edited and run. Some of this
+may be refactored to be more "librarified". Until then, here's the scoop:
 
-In the project directory, you can run:
+### run
 
-### `npm run dev`
+- install [rad](https://github.com/cdaringe/rad/?tab=readme-ov-file#install) (e.g. `curl -fsSL https://raw.githubusercontent.com/cdaringe/rad/main/assets/install.sh | sh`)
+- `rad dockerRun`
 
-Runs the app in the development mode.<br> Open
-[http://localhost:5173](http://localhost:5173) to view it in the browser.
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br> It correctly bundles
-Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br> Your app is
-ready to be deployed!
-
-## Deployment
-
-Learn more about deploying your application with the
-[documentations](https://vitejs.dev/guide/static-deploy.html)
+### develop
+- install `node.js`, matching the version [.nvmrc](./.nvmrc). I recommend using [fnm](https://github.com/Schniz/fnm)
+- install `pnpm`
+- `pnpm install`
+-`cd apps/{APP_NAME} && pnpm run dev`

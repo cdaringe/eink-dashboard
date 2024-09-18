@@ -16,15 +16,13 @@ function App() {
   });
   return (
     <>
-      {kind === "cat" ? (
-        <CatImage />
-      ) : kind === "airquality" ? (
-        <AirQuality />
-      ) : kind === "onion" ? (
-        <p>onion</p>
-      ) : (
-        <h1>{`Not found (kind: ${kind})`}</h1>
-      )}
+      {kind === "cat"
+        ? <CatImage />
+        : kind === "airquality"
+        ? <AirQuality />
+        : kind === "onion"
+        ? <p>onion</p>
+        : <h1>{`Not found (kind: ${kind})`}</h1>}
     </>
   );
 }

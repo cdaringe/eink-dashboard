@@ -1,3 +1,11 @@
 {
-  "name": "eink-dashboard-workspace"
+  "name": "eink-dashboard-workspace",
+  "scripts": {
+    "clean": "del-cli libs/*/dist apps/*/dist"
+  },
+  "devDependencies": {
+    "del-cli": "5.1.0",
+    "wireit": "0.14.9"
+  },
+  "packageManager": "pnpm@9.10.0"
 }

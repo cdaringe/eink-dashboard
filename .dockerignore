@@ -1,4 +1,5 @@
 dist
 node_modules
-package.json
 rad.ts
+docker-compose.yaml
+deno.json

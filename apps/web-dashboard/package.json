@@ -1,16 +1,15 @@
 {
-  "name": "eink-dashboard",
+  "name": "@eink-dashboard/web-dashboard",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "format": "prettier --write .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "capture-website": "4.1.0",
     "solid-js": "^1.8.20"
   },
   "devDependencies": {

@@ -1,0 +1,16 @@
+services:
+  eink_dashboard_host:
+    platform: linux/amd64
+    restart: unless-stopped
+    image: "eink_dashboard_host"
+    init: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./apps/dashboard-host/public:/app/apps/dashboard-host/public
+    environment:
+      - PORT=8000
+      - SNAP_DURATION_S=1800 # 30 minutes
