@@ -12,8 +12,8 @@
 
 ### run it
 
-Devevelopment: `pnpm run start`
-Production: See [the docker-compose.yml](../../docker-compose.yaml)!
+- Development: `pnpm run start`
+- Production: See [the docker-compose.yml](../../docker-compose.yaml)!
 
 ## configure it
 
@@ -32,6 +32,7 @@ Overlays are query-param driven.
 | ------- | --------------------------------------------------------------------- | --------------------------------------------------------- |
 | battery | [see battery overlay for usage details](.src/lib/overlays/battery.ts) | Add a battery icon with remaining battery % to the image. |
 | text    | [see text overlay for usage details](./src/lib/overlays/text.ts)      | Add text onto the image.                                  |
+| more-cool-stuff? | ??? | Let's add more together :) |
 
 ## architecture
 

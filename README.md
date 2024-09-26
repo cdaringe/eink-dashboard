@@ -14,14 +14,11 @@ be refactored to be more "librarified". Until then, here's the scoop:
 
 ### run
 
-- install [rad](https://github.com/cdaringe/rad/?tab=readme-ov-file#install)
+- (optional) install [rad](https://github.com/cdaringe/rad/?tab=readme-ov-file#install)
   (e.g.
   `curl -fsSL https://raw.githubusercontent.com/cdaringe/rad/main/assets/install.sh | sh`)
 - `rad dockerRun`
 
 ### develop
 
-- install `node.js`, matching the version [.nvmrc](./.nvmrc). I recommend using
-  [fnm](https://github.com/Schniz/fnm)
-- install `pnpm`
-- `pnpm install` -`cd apps/{APP_NAME} && pnpm run dev`
+Please see the docs in [apps/dashboard-host/readme.md](./apps/dashboard-host/readme.md)!

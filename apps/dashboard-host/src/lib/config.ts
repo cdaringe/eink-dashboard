@@ -1,6 +1,10 @@
 import os from "os";
 const isMacOs = os.version().match(/darwin/i);
 
+
+/**
+ * ENV supported configuration options.
+*/
 const PORT = process.env.PORT ?? "8000";
 const {
   DISPLAY_WIDTH = "820",
