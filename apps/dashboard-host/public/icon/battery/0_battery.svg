@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="100" viewBox="0 0 400 100">
+  <!-- Text area (150px width) -->
+  <text x="95" y="75" font-family="Arial, sans-serif" font-size="72" fill="#333333" text-anchor="middle">SWAPME%</text>
+
+  <!-- Battery area (200px width) -->
+  <g transform="translate(200, 0)">
+    <!-- Battery outline -->
+    <rect x="5" y="5" width="180" height="90" rx="5" ry="5" fill="none" stroke="#333333" stroke-width="5"/>
+    <!-- Battery terminal -->
+    <rect x="185" y="35" width="10" height="30" rx="2" ry="2" fill="#333333"/>
+    <!-- Battery fill (to be adjusted) -->
+    <rect x="10" y="10" width="0" height="80" fill="#666666"/>
+  </g>
+</svg>

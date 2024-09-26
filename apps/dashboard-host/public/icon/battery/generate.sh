@@ -20,8 +20,13 @@ cat > battery_template.svg << EOL
 </svg>
 EOL
 
-# Generate images for percentages 5 to 100 in increments of 5
-for percent in $(seq 0 5 100); do
+function write_image() {
+  percent=$1
+  filename_prefix=${2:-$percent}
+  battery_text=${3:-$percent}
+  filename_svg="${filename_prefix}_battery.svg"
+  filename_png="${filename_prefix}_battery.png"
+
   # Calculate the width of the battery fill
   fill_width=$(echo "$percent * $battery_width / 100" | bc)
 
@@ -29,11 +34,18 @@ for percent in $(seq 0 5 100); do
   sed "s/width=\"battery_width\"/width=\"$fill_width\"/" battery_template.svg > temp.svg
 
   cp temp.svg "${percent}_battery.svg"
-  sed "s/SWAPME/$percent/" temp.svg > "${percent}_battery.svg"
+  sed "s/SWAPME/$battery_text/" temp.svg > "${filename_svg}"
   # Convert SVG to PNG
-  convert -depth 8 -colors 256 "${percent}_battery.svg" "${percent}_battery.png"
-  rm "${percent}_battery.svg"
-  echo "Generated ${percent}_battery.png"
+  convert -depth 8 -colors 256 "${filename_svg}" "${filename_png}"
+  rm "${filename_svg}"
+  echo "Generated ${filename_png}"
+}
+
+# Generate images for percentages 5 to 100 in increments of 5
+# create an error image
+write_image 0 "unknown" "?"
+for percent in $(seq 0 5 100); do
+  write_image $percent
 done
 
 # Clean up temporary files

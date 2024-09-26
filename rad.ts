@@ -16,15 +16,6 @@ const dockerRun: Task = {
 
 const format: Task = `deno fmt`;
 
-const deployCopy: Task = `scp -r . $NAS_IP:/volume1/docker/eink-dashboard`;
-
-// const deploy: Task = {
-//   dependsOn: [deployCopy],
-//   fn({ sh }) {
-//     return sh(`ssh $NAS_IP "cd /volume1/docker && docker-compose down -f && ${dockerComposeRunBaseCmd} -d"`);
-//   },
-// };
-
 export const tasks: Tasks = {
   install: {
     target: "node_modules",

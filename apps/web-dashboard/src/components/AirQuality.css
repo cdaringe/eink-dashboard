@@ -3,10 +3,10 @@
   grid-template-rows: 300px 1fr 1fr 30px;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
-  "panel_1 panel_1"
-  "panel_2 panel_3"
-  "panel_4 panel_4"
-  "panel_header panel_header";
+    "panel_1 panel_1"
+    "panel_2 panel_3"
+    "panel_4 panel_4"
+    "panel_header panel_header";
   height: 1200px;
   width: 820px;
 }

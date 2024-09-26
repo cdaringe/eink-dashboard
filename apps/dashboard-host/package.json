@@ -5,8 +5,10 @@
   "scripts": {
     "build:esbuild:host": "esbuild src/bin/host.ts --bundle --platform=node --outfile=dist/bin/host.js",
     "build:esbuild:snap": "esbuild src/bin/snap.ts --bundle --platform=node --outfile=dist/bin/snap.js",
+    "format": "prettier --write .",
     "build": "wireit",
-    "start": "wireit"
+    "start": "wireit",
+    "typecheck": "wireit"
   },
   "wireit": {
     "copy:webapp": {

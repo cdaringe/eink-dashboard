@@ -1,52 +1,52 @@
+/**
+ * snapshotting is a separate process to simply clear more mem/resource
+ * out of the default server process.
+ */
+
 import cw from "capture-website";
 import os from "os";
-import cp from "child_process";
-import { setTimeout } from "timers/promises";
-import { display } from "../lib";
+import path from "node:path";
+import * as sdk from "../lib";
+import execa from "execa";
 
-const log = (msg: string) =>
-  console.log(`[snapshot (${new Date().toISOString()})]: ${msg}`);
+const logger = sdk.logging.createLogger({ level: "info", name: "snap" });
+const config = sdk.config.createConfig();
 
 const isMacOs = os.version().match(/darwin/i);
 
-const {
-  IMAGE_KIND = "airquality",
-  PORT = "8000",
-} = process.env;
+async function main() {
+  const grayFilename = `${config.snap.writeDirname}/${path.basename(config.snap.imageBasename)}`;
+  const colorFilename = `${grayFilename}.color`;
 
-async function main({ port, kind }: { port: number; kind: string }) {
-  log('starting snapshot');
-  const destColorFilename = `./public/${kind}-color.png`;
-  const destGrayFilename = `./public/${kind}.png`;
-  await setTimeout(10_000);
-  await cw.file(`http://localhost:${port}/?kind=${kind}`, destColorFilename, {
-    ...display.dims,
+  /**
+   * Visit the eink-dashboard-host server and take a snapshot of the dashboard.
+   */
+  const imageUrl = `${config.snap.url.origin}${config.snap.url.pathname}${config.snap.url.search}`;
+  logger.log(`starting snapshot ${imageUrl}`);
+  await cw.file(imageUrl, colorFilename, {
+    ...config.display.dims,
     element: "#root",
     overwrite: true,
     delay: 20,
     scaleFactor: isMacOs ? 1 : undefined,
     timeout: 60_000 * 2,
     launchOptions: {
-      headless: 'new',
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-      ],
-      // // @warn guess n check hack
-      // env: {
-      //   TZ: "America/Los_Angeles",
-      // }
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      env: {
+        ...process.env,
+        TZ: config.snap.timezone,
+      },
     },
   });
-  log(`snapshot saved to ${destColorFilename}`);
-  cp.execSync(`convert ${destColorFilename} -depth 8 -colors 256 ${destGrayFilename}`);
-  [destColorFilename, destGrayFilename].forEach(filename => {
-    cp.execSync(`chmod ugo+rw ${filename}`);
-  });
-  log("converted to 256 colors");
+  logger.log(`snapshot saved to ${colorFilename}`);
+  await execa.command(
+    `convert ${colorFilename} -depth 8 -colors 256 ${grayFilename}`,
+  );
+  for (const filename of [colorFilename, grayFilename]) {
+    await execa.command(`chmod ugo+rw ${filename}`);
+  }
+  logger.log("converted to 256 colors");
 }
 
-main({ kind: IMAGE_KIND, port: Number(PORT) }).then(
-  () => log("complete"),
-  (err) => log(String(err)),
-);
+main().then(() => logger.log("complete"), logger.error);

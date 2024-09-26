@@ -16,22 +16,22 @@ function App() {
   });
   return (
     <>
-      {kind === "cat"
-        ? <CatImage />
-        : kind === "airquality"
-        ? <AirQuality />
-        : kind === "onion"
-        ? <p>onion</p>
-        : (
-          <>
-            <h4>Welcome</h4>
-            <ul>
-              <li>
-                <a href="/?kind=airquality">airquality</a>
-              </li>
-            </ul>
-          </>
-        )}
+      {kind === "cat" ? (
+        <CatImage />
+      ) : kind === "airquality" ? (
+        <AirQuality />
+      ) : kind === "onion" ? (
+        <p>onion</p>
+      ) : (
+        <>
+          <h4>Welcome</h4>
+          <ul>
+            <li>
+              <a href="/?kind=airquality">airquality</a>
+            </li>
+          </ul>
+        </>
+      )}
     </>
   );
 }

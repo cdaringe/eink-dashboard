@@ -7,9 +7,12 @@ interface LoadingIframeProps {
   id: string;
 }
 
-const LoadingIframe: Component<LoadingIframeProps> = (
-  { label, src, class: className, id },
-) => {
+const LoadingIframe: Component<LoadingIframeProps> = ({
+  label,
+  src,
+  class: className,
+  id,
+}) => {
   const [loading, setLoading] = createSignal(true);
 
   return (
@@ -31,8 +34,7 @@ const LoadingIframe: Component<LoadingIframeProps> = (
           display: loading() ? "none" : "block",
         }}
         onLoad={() => setLoading(false)}
-      >
-      </iframe>
+      ></iframe>
     </>
   );
 };

@@ -12,4 +12,6 @@ services:
     #   - ./apps/dashboard-host/public:/app/apps/dashboard-host/public:rw
     environment:
       - PORT=8000
-      - SNAP_DURATION_S=1800 # 30 minutes
+      - SNAP_INTERVAL_S=1800 # 30 minutes
+      # - DISPLAY_WIDTH=820
+      # - DISPLAY_HEIGHT=1200

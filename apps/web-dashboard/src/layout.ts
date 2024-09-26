@@ -15,8 +15,8 @@ export const landscapify = <
       ? t.display === "block"
         ? "inline-block"
         : t.display === "inline-block"
-        ? "block"
-        : t.display
+          ? "block"
+          : t.display
       : t.display
     : t.display;
   return {
