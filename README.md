@@ -2,6 +2,9 @@
 
 Applications to support generating and hosting content for an `e-ink` dashboard.
 
+Looking for the firmware? See [cdaringe/eink-dashboard-firmware](https://github.com/cdaringe/eink-dashboard-firmware).
+
+Here's an example dashboard:
 ![](./demo.png)
 
 ## usage
