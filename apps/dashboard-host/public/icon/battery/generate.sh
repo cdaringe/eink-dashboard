@@ -21,7 +21,7 @@ cat > battery_template.svg << EOL
 EOL
 
 # Generate images for percentages 5 to 100 in increments of 5
-for percent in $(seq 5 5 100); do
+for percent in $(seq 0 5 100); do
   # Calculate the width of the battery fill
   fill_width=$(echo "$percent * $battery_width / 100" | bc)
 
@@ -31,7 +31,7 @@ for percent in $(seq 5 5 100); do
   cp temp.svg "${percent}_battery.svg"
   sed "s/SWAPME/$percent/" temp.svg > "${percent}_battery.svg"
   # Convert SVG to PNG
-  convert "${percent}_battery.svg" "${percent}_battery.png"
+  convert -depth 8 -colors 256 "${percent}_battery.svg" "${percent}_battery.png"
   rm "${percent}_battery.svg"
   echo "Generated ${percent}_battery.png"
 done

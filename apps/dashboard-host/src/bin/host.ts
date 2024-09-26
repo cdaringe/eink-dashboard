@@ -4,6 +4,8 @@ import child_process from "child_process";
 import { dashkinds } from "@eink-dashboard/common";
 import path from "path";
 import serveHandler from "serve-handler";
+import execa from 'execa';
+import { display } from "../lib";
 
 const SNAP_SCRIPT_PATH = `${__dirname}/snap.js`;
 const { PORT = "8000", SNAP_DURATION_S = String(60 * 60) } = process.env;
@@ -18,7 +20,8 @@ const webDashboardDirname = path.resolve(process.cwd(), "dist/web-dashboard");
 // const publicDirname = path.resolve(process.cwd(), "public");
 
 const server = http.createServer(async (req, res) => {
-  const pathnameParts = req.url!
+  const uri = new URL(req.url!, `http://${req.headers.host ?? "http://localhost"}`);
+  const pathnameParts = uri.pathname
     .split("/")
     .map((it) => it.toLowerCase().trim())
     .filter(Boolean);
@@ -29,8 +32,19 @@ const server = http.createServer(async (req, res) => {
         ? p2
         : dashkinds[randIndex(dashkinds.length)]!;
       const relativeFilename = `./public/${kind}.png`;
-      const fileSize = (await fs.stat(relativeFilename)).size;
-      const file = await fs.open(relativeFilename, "r");
+      let filenameToServe = relativeFilename;
+      const batteryPercentStr = uri.searchParams.get('batterypercent')
+      if (batteryPercentStr) {
+        const batteryPercent = Number(batteryPercentStr);
+        // given a battery percent, find the closest number from 0 to 100 in increments of 5
+        const batteryPercentIncr5 = Math.max(5, Math.round(batteryPercent / 5) * 5);
+        const batteryPngFilename = `./public/icon/battery/${batteryPercentIncr5}_battery.png`;
+        const lastFileToServe = filenameToServe;
+        filenameToServe = filenameToServe.replace('.png', `.${batteryPercentIncr5}_battery.png`);
+        await execa.command(`convert ${lastFileToServe} ( ${batteryPngFilename} -resize x24 ) -geometry +${display.dims.width - 280}+${display.dims.height-28} -composite ${filenameToServe}`);
+      }
+      const fileSize = (await fs.stat(filenameToServe)).size;
+      const file = await fs.open(filenameToServe, "r");
       res.setHeader("Content-Type", "image/png");
       res.setHeader("Content-Length", fileSize.toString());
       log(`serving ${kind}.png to ${req.socket.remoteAddress ?? "unknown"}`);

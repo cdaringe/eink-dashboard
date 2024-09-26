@@ -48,6 +48,7 @@
   "dependencies": {
     "@eink-dashboard/common": "workspace:*",
     "capture-website": "^4.1.0",
+    "execa": "^5",
     "puppeteer": "21.11.0",
     "serve-handler": "6.1.5"
   },

@@ -2,6 +2,7 @@ import cw from "capture-website";
 import os from "os";
 import cp from "child_process";
 import { setTimeout } from "timers/promises";
+import { display } from "../lib";
 
 const log = (msg: string) =>
   console.log(`[snapshot (${new Date().toISOString()})]: ${msg}`);
@@ -19,8 +20,7 @@ async function main({ port, kind }: { port: number; kind: string }) {
   const destGrayFilename = `./public/${kind}.png`;
   await setTimeout(10_000);
   await cw.file(`http://localhost:${port}/?kind=${kind}`, destColorFilename, {
-    width: 820,
-    height: 1200,
+    ...display.dims,
     element: "#root",
     overwrite: true,
     delay: 20,
