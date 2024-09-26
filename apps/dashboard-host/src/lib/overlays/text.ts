@@ -4,7 +4,10 @@ import execa from "execa";
 import { Overlay } from "./common";
 import * as convert from "../convert";
 /**
- * text,x-offset,y-offset,size,color,font
+ * Add text overlay to the image. You can add MANY text overlay query params.
+ * Fonts available can be found in the docker image by asking for them:
+ * > docker run --rm --entrypoint sh edh -c 'convert -list font'
+ * @interface textoverlay=text,x-offset,y-offset,size,color,font
  * @example: http://localhost:8000/dashboard/airquality.png?textoverlay=3.7v,508,1175,16
  */
 export const overlay: Overlay = async (ctx) => {
@@ -20,7 +23,7 @@ export const overlay: Overlay = async (ctx) => {
       yOffset = "0",
       size = "24",
       color = "black",
-      font = "Arial",
+      font = ctx.config.os === "macos" ? "Arial" : "FreeMono",
     ] = textOverlay
       .split(",")
       .map((it) => it.trim())

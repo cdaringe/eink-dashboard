@@ -3,3 +3,4 @@ node_modules
 rad.ts
 docker-compose.yaml
 deno.json
+**/node_modules

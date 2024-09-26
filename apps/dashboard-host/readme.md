@@ -20,6 +20,19 @@ Production: See [the docker-compose.yml](../../docker-compose.yaml)!
 Please see the [config module](./src/lib/config.ts) for ENV vars you can use to fine tune the workflow. You
 may also study the [the docker-compose.yml](../../docker-compose.yaml) for references.
 
+## api
+
+When accessing the server to download images, you can add overlays!
+
+![overlay features](./features.png)
+
+Overlays are query-param driven.
+
+| overlay | interface                                                             | description                                               |
+| ------- | --------------------------------------------------------------------- | --------------------------------------------------------- |
+| battery | [see battery overlay for usage details](.src/lib/overlays/battery.ts) | Add a battery icon with remaining battery % to the image. |
+| text    | [see text overlay for usage details](./src/lib/overlays/text.ts)      | Add text onto the image.                                  |
+
 ## architecture
 
 1. The host process--in idle state--is a very thin server that serves:

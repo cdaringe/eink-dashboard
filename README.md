@@ -2,6 +2,8 @@
 
 Applications to support generating and hosting content for an `e-ink` dashboard.
 
+![](./demo.png)
+
 ## usage
 
 This project is largely meant to be _forked_, edited and run. Some of this may

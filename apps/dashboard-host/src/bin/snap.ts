@@ -4,15 +4,12 @@
  */
 
 import cw from "capture-website";
-import os from "os";
 import path from "node:path";
 import * as sdk from "../lib";
 import execa from "execa";
 
 const logger = sdk.logging.createLogger({ level: "info", name: "snap" });
 const config = sdk.config.createConfig();
-
-const isMacOs = os.version().match(/darwin/i);
 
 async function main() {
   const grayFilename = `${config.snap.writeDirname}/${path.basename(config.snap.imageBasename)}`;
@@ -28,7 +25,7 @@ async function main() {
     element: "#root",
     overwrite: true,
     delay: 20,
-    scaleFactor: isMacOs ? 1 : undefined,
+    scaleFactor: config.os === "macos" ? 1 : undefined,
     timeout: 60_000 * 2,
     launchOptions: {
       headless: "new",
@@ -43,10 +40,7 @@ async function main() {
   await execa.command(
     `convert ${colorFilename} -depth 8 -colors 256 ${grayFilename}`,
   );
-  for (const filename of [colorFilename, grayFilename]) {
-    await execa.command(`chmod ugo+rw ${filename}`);
-  }
-  logger.log("converted to 256 colors");
+  logger.log(`converted to 256 colors ${grayFilename}`);
 }
 
 main().then(() => logger.log("complete"), logger.error);

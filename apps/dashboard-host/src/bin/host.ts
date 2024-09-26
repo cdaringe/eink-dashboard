@@ -21,6 +21,8 @@ const createContext = ({
 
 const createServer = () =>
   http.createServer(async (req, res) => {
+    logger.log({ method: req.method, url: req.url, type: "request" });
+
     const url = new URL(
       req.url!,
       `http://${req.headers.host ?? "http://localhost"}`,

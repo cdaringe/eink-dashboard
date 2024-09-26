@@ -2,11 +2,20 @@ import execa from "execa";
 import { Overlay } from "./common";
 import * as convert from "../convert";
 
+const getImagePrefix = (batteryPercent: number) =>
+  Number.isSafeInteger(batteryPercent) &&
+  batteryPercent >= 0 &&
+  batteryPercent <= 100
+    ? batteryPercent
+    : "unknown";
+const getImageBasename = (batteryPercent: number) =>
+  `${getImagePrefix(batteryPercent)}_battery.png`;
 const getImageFilename = (batteryPercent: number) =>
-  `./public/icon/battery/${Number.isSafeInteger(batteryPercent) && batteryPercent >= 0 && batteryPercent <= 100 ? batteryPercent : "unknown"}_battery.png`;
+  `./public/icon/battery/${getImageBasename(batteryPercent)}`;
 
 /**
- * perecentage-text,x-offset,y-offset,convert-resize-arg
+ * Adds a battery icon with with remaining battery % left to the image.
+ * @interface batteryoverlay=perecentage-text,x-offset,y-offset,convert-resize-arg
  * @example: http://localhost:8000/dashboard/airquality.png?batteryoverlay=33,540,1172,x24
  */
 export const overlay: Overlay = async (ctx) => {
@@ -30,7 +39,7 @@ export const overlay: Overlay = async (ctx) => {
   const lastFileToServe = ctx.filenameToServe;
   ctx.filenameToServe = ctx.filenameToServe.replace(
     ".png",
-    `.${batteryPercentIncr5}_battery.png`,
+    `.with_battery.png`,
   );
   const compositeCommand = convert.compositeCommand({
     filenames: {

@@ -1,3 +1,6 @@
+import os from "os";
+const isMacOs = os.version().match(/darwin/i);
+
 const PORT = process.env.PORT ?? "8000";
 const {
   DISPLAY_WIDTH = "820",
@@ -15,6 +18,7 @@ const SNAP_SCRIPT_RELATIVE_FILENAME = `./dist/bin/snap.js`;
 const DASHBOARD_GUI_ASSETS_RELATIVE_DIRNAME = `./dist/web-dashboard`;
 
 export type Config = {
+  os: "linux" | "macos";
   display: {
     dims: {
       width: number;
@@ -39,6 +43,7 @@ export type Config = {
 
 export const createConfig = (config?: Partial<Config>): Config => {
   return {
+    os: isMacOs ? "macos" : "linux",
     port: Number(PORT),
     ...config,
     display: {
