@@ -1,10 +1,17 @@
-import { Component } from "solid-js";
+import { Component, createSignal } from "solid-js";
 import { config } from "../../../../libs/eink-dashboard-common";
 import "./AirQuality.css";
 import logo from "../assets/logo.png";
 import LoadingIframe from "./LoadingIframe";
 
 export const AirQuality: Component = ({}) => {
+  const [loadCount, setLoadCount] = createSignal(0);
+
+  const incrLoadCount = () => {
+    setTimeout(() => {
+      setLoadCount(last => last + 1);
+    }, /* give time for vis rendering */ 2000);
+  };
   const searchParams = new URLSearchParams(window.location.search);
   const from = searchParams.get("from") || "now-12h";
   const to = searchParams.get("to") || "now";
@@ -17,15 +24,16 @@ export const AirQuality: Component = ({}) => {
   return (
     <div id="panel_grid">
       <header id="panel_header">
-        <img id="panel_logo" src={logo} />
+        {/* When the logo is shown, we're ready! */}
+        {loadCount() >= 4 ? <img id="panel_logo" class='snapshot_ready' src={logo} /> : <span>Loaded {loadCount()}</span>}
         <div>
           {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
         </div>
       </header>
-      <LoadingIframe id="panel_1" label={"score"} src={score} />
-      <LoadingIframe id="panel_2" label={"co2"} src={co2} />
-      <LoadingIframe id="panel_3" label={"pm25"} src={pm25} />
-      <LoadingIframe id="panel_4" label={"voc"} src={voc} />
+      <LoadingIframe onLoad={incrLoadCount} id="panel_1" label={"score"} src={score} />
+      <LoadingIframe onLoad={incrLoadCount} id="panel_2" label={"co2"} src={co2} />
+      <LoadingIframe onLoad={incrLoadCount} id="panel_3" label={"pm25"} src={pm25} />
+      <LoadingIframe onLoad={incrLoadCount} id="panel_4" label={"voc"} src={voc} />
     </div>
   );
 };

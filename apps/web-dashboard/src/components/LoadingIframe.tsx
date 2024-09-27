@@ -1,10 +1,11 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createEffect, createSignal } from "solid-js";
 import "./LoadingIframe.css";
 interface LoadingIframeProps {
   src: string;
   class?: string;
   label: string;
   id: string;
+  onLoad?: () => void;
 }
 
 const LoadingIframe: Component<LoadingIframeProps> = ({
@@ -12,8 +13,14 @@ const LoadingIframe: Component<LoadingIframeProps> = ({
   src,
   class: className,
   id,
+  onLoad
 }) => {
   const [loading, setLoading] = createSignal(true);
+  createEffect(() => {
+    if (!loading()) {
+      onLoad?.();
+    }
+  });
 
   return (
     <>

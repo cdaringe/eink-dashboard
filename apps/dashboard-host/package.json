@@ -21,7 +21,7 @@
       "output": [
         "dist/web-dashboard/**"
       ],
-      "command": "mkdir -p dist && cp -r ../web-dashboard/dist/ ./dist/web-dashboard && ls -al ./dist/web-dashboard"
+      "command": "mkdir -p dist && mv ../web-dashboard/dist/* ./dist/web-dashboard/ && ls -al ./dist/web-dashboard"
     },
     "start": {
       "dependencies": [
@@ -51,7 +51,7 @@
     "@eink-dashboard/common": "workspace:*",
     "capture-website": "^4.1.0",
     "execa": "^5",
-    "puppeteer": "21.11.0",
+    "puppeteer": "23.3.1",
     "serve-handler": "6.1.5"
   },
   "devDependencies": {

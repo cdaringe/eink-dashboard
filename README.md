@@ -17,7 +17,8 @@ be refactored to be more "librarified". Until then, here's the scoop:
 - (optional) install [rad](https://github.com/cdaringe/rad/?tab=readme-ov-file#install)
   (e.g.
   `curl -fsSL https://raw.githubusercontent.com/cdaringe/rad/main/assets/install.sh | sh`)
-- `rad dockerRun`
+- `rad dockerRun`, or, just good ol' the `docker compose up --build --force-recreate`
+  - Out of the box it won't _do_ much until you configure things. Please see the [#develop](#develop)
 
 ### develop
 
