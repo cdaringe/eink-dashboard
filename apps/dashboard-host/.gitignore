@@ -2,3 +2,4 @@ dist
 public/**/*.png
 public/**/*.jpg
 public/**/*.jpeg
+public/**/*.color

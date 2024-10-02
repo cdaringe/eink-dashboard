@@ -1,5 +1,6 @@
 import http from "http";
 import path from "node:path";
+import fs from "node:fs/promises";
 import serveHandler from "serve-handler";
 import * as sdk from "../lib/";
 import execa from "execa";
@@ -23,43 +24,62 @@ const createContext = ({
   textOverlay: url.searchParams.getAll("textoverlay"),
 });
 
+const handleRequest = async (req: http.IncomingMessage, res: http.ServerResponse) => {
+  logger.log({ method: req.method, url: req.url, type: "request" });
+
+  const url = new URL(
+    req.url!,
+    `http://${req.headers.host ?? "http://localhost"}`,
+  );
+  const [scope, part2, part3] = url.pathname
+    .split("/")
+    .map((it) => it.toLowerCase().trim())
+    .filter(Boolean);
+
+  let context = createContext({ url });
+
+  switch (scope) {
+    case "api": {
+      if (part2 === "refresh") {
+        runSnapWorkflow();
+        res.statusCode = 200;
+        return res.end(JSON.stringify({ ok: true}));
+      }
+      if (part2 === "mtime") {
+        if (!part3) throw new Error("missing filename");
+        const filename = path.join(process.cwd(), 'public', path.basename(part3));
+        const mtime = await fs.stat(filename).then((it) => it.mtime);
+        logger.log({ filename, mtime: mtime.getTime() });
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/plain");
+        return res.end(String(mtime.getTime()));
+      }
+      res.statusCode = 400;
+      res.setHeader("Content-Type", "application/json");
+      return res.end(JSON.stringify({ error: "missing valid api action. did you mean any of: [refresh]?" }));
+    }
+    case "dashboard":
+      context.filenameToServe = `./public/${path.basename(part2)}`;
+      context = await sdk.overlays.battery(context);
+      context = await sdk.overlays.text(context);
+      return sdk.request.streamFile(context, req, res);
+    case "public":
+      return serveHandler(req, res);
+    default:
+      return serveHandler(req, res, {
+        public: config.snap.guiAssetsDirname,
+      });
+  }
+};
+
 const createServer = () =>
   http.createServer(async (req, res) => {
-    logger.log({ method: req.method, url: req.url, type: "request" });
-
-    const url = new URL(
-      req.url!,
-      `http://${req.headers.host ?? "http://localhost"}`,
-    );
-    const [scope, part2] = url.pathname
-      .split("/")
-      .map((it) => it.toLowerCase().trim())
-      .filter(Boolean);
-
-    let context = createContext({ url });
-
-    switch (scope) {
-      case "api": {
-        if (part2 === "refresh") {
-          runSnapWorkflow();
-          res.statusCode = 200;
-          return res.end(JSON.stringify({ ok: true}));
-        }
-        res.statusCode = 400;
-        res.setHeader("Content-Type", "application/json");
-        return res.end(JSON.stringify({ error: "missing valid api action. did you mean any of: [refresh]?" }));
-      }
-      case "dashboard":
-        context.filenameToServe = `./public/${path.basename(part2)}`;
-        context = await sdk.overlays.battery(context);
-        context = await sdk.overlays.text(context);
-        return sdk.request.streamFile(context, req, res);
-      case "public":
-        return serveHandler(req, res);
-      default:
-        return serveHandler(req, res, {
-          public: config.snap.guiAssetsDirname,
-        });
+    try {
+      await handleRequest(req, res);
+    } catch (error) {
+      logger.error(error);
+      res.statusCode = 500;
+      res.end(`internal server error: ${String(error)}`);
     }
   });
 

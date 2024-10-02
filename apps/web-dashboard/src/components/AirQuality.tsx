@@ -10,7 +10,7 @@ export const AirQuality: Component = ({}) => {
   const incrLoadCount = () => {
     setTimeout(() => {
       setLoadCount(last => last + 1);
-    }, /* give time for vis rendering */ 2000);
+    }, /* give time for vis rendering */ 5000);
   };
   const searchParams = new URLSearchParams(window.location.search);
   const from = searchParams.get("from") || "now-12h";
