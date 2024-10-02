@@ -21,7 +21,7 @@
       "output": [
         "dist/web-dashboard/**"
       ],
-      "command": "mkdir -p dist && mv ../web-dashboard/dist/* ./dist/web-dashboard/ && ls -al ./dist/web-dashboard"
+      "command": "mkdir -p dist/web-dashboard/ && mv ../web-dashboard/dist/* ./dist/web-dashboard/ && ls -al ./dist/web-dashboard"
     },
     "start": {
       "dependencies": [

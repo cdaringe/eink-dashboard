@@ -47,7 +47,9 @@ run set -x && pnpm dlx puppeteer@23.3.1 install chrome --install-deps
 copy --chown=node:users ./ .
 
 # build
-run pnpm -r run build --filter apps/dashboard-host/ && tree apps/dashboard-host/dist
+run pnpm run clean \
+  && pnpm -r --filter ./apps/dashboard-host/ run build \
+  && tree apps/dashboard-host/dist
 
 workdir /app/apps/dashboard-host
 env NODE_ENV=production
