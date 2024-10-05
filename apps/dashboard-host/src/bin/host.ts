@@ -38,16 +38,18 @@ const handleRequest = async (req: http.IncomingMessage, res: http.ServerResponse
 
   let context = createContext({ url });
 
+  const dashboardBasename = "airquality.png";
+
   switch (scope) {
     case "api": {
-      if (part2 === "refresh") {
+      if (part2 === "dashboard" && part3 === "refresh") {
         runSnapWorkflow();
         res.statusCode = 200;
         return res.end(JSON.stringify({ ok: true}));
       }
-      if (part2 === "mtime") {
+      if (part2 === "dashboard" && part3 === "version") {
         if (!part3) throw new Error("missing filename");
-        const filename = path.join(process.cwd(), 'public', path.basename(part3));
+        const filename = path.join(process.cwd(), 'public', dashboardBasename);
         const mtime = await fs.stat(filename).then((it) => it.mtime);
         logger.log({ filename, mtime: mtime.getTime() });
         res.statusCode = 200;
@@ -59,7 +61,7 @@ const handleRequest = async (req: http.IncomingMessage, res: http.ServerResponse
       return res.end(JSON.stringify({ error: "missing valid api action. did you mean any of: [refresh]?" }));
     }
     case "dashboard":
-      context.filenameToServe = `./public/${path.basename(part2)}`;
+      context.filenameToServe = `./public/${dashboardBasename}`;
       context = await sdk.overlays.battery(context);
       context = await sdk.overlays.text(context);
       return sdk.request.streamFile(context, req, res);
