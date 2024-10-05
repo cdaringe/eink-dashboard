@@ -1,6 +1,6 @@
 import os from "os";
 const isMacOs = os.version().match(/darwin/i);
-
+import path from "node:path";
 
 /**
  * ENV supported configuration options.
@@ -42,6 +42,7 @@ export type Config = {
     scriptEntryFilename: string;
     timezone?: string;
     writeDirname: string;
+    grayFilename: string;
   };
 };
 
@@ -71,6 +72,9 @@ export const createConfig = (config?: Partial<Config>): Config => {
       scriptEntryFilename: SNAP_SCRIPT_RELATIVE_FILENAME,
       intervalSeconds: Number(SNAP_INTERVAL_S),
       ...config?.snap,
+      get grayFilename() {
+        return `${this.writeDirname}/${path.basename(this.imageBasename)}`
+      }
     },
   };
 };

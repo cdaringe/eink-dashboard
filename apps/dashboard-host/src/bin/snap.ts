@@ -4,7 +4,6 @@
  */
 
 import cw from "capture-website";
-import path from "node:path";
 import * as sdk from "../lib";
 import execa from "execa";
 
@@ -12,7 +11,7 @@ const logger = sdk.logging.createLogger({ level: "info", name: "snap" });
 const config = sdk.config.createConfig();
 
 async function main() {
-  const grayFilename = `${config.snap.writeDirname}/${path.basename(config.snap.imageBasename)}`;
+  const grayFilename = config.snap.grayFilename;
   const colorFilename = `${grayFilename}.color`;
 
   /**

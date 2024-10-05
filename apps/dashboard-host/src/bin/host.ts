@@ -1,5 +1,4 @@
 import http from "http";
-import path from "node:path";
 import fs from "node:fs/promises";
 import serveHandler from "serve-handler";
 import * as sdk from "../lib/";
@@ -43,15 +42,18 @@ const handleRequest = async (req: http.IncomingMessage, res: http.ServerResponse
   switch (scope) {
     case "api": {
       if (part2 === "dashboard" && part3 === "refresh") {
+        if (isSnapshotRunning) {
+          res.statusCode = 409;
+          return res.end(JSON.stringify({ error: "snapshot workflow already running" }));
+        }
         runSnapWorkflow();
         res.statusCode = 200;
         return res.end(JSON.stringify({ ok: true}));
       }
       if (part2 === "dashboard" && part3 === "version") {
         if (!part3) throw new Error("missing filename");
-        const filename = path.join(process.cwd(), 'public', dashboardBasename);
-        const mtime = await fs.stat(filename).then((it) => it.mtime);
-        logger.log({ filename, mtime: mtime.getTime() });
+        const mtime = await fs.stat(config.snap.grayFilename).then((it) => it.mtime);
+        logger.log({ filename: config.snap.guiAssetsDirname, mtime: mtime.getTime() });
         res.statusCode = 200;
         res.setHeader("Content-Type", "text/plain");
         return res.end(String(mtime.getTime()));
@@ -90,19 +92,19 @@ async function runSnapWorkflow() {
   if (isSnapshotRunning) {
     return logger.error("snapshot workflow already running");
   }
-  clearInterval(snapshotInterval);
   isSnapshotRunning = true;
+  clearInterval(snapshotInterval);
   logger.log("running snapshot workflow");
   const intervalMs = config.snap.intervalSeconds * 1000;
   const proc = execa("node", [config.snap.scriptEntryFilename], {
     stdio: "inherit",
   });
   proc.catch(logger.error).finally(() => {
+    isSnapshotRunning = false;
     proc.kill(9);
     logger.log(`next snapshot in ${config.snap.intervalSeconds} seconds`);
     clearInterval(snapshotInterval);
     snapshotInterval = setTimeout(runSnapWorkflow, intervalMs);
-    isSnapshotRunning = false;
   });
 }
 
