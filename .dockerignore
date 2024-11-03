@@ -4,3 +4,6 @@ rad.ts
 docker-compose.yaml
 deno.json
 **/node_modules
+apps/web-dashboard/.next
+.wireit
+**/.wireit

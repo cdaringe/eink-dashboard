@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from "solid-js";
+import React from "react";
 
 const catNames = [
   "Clawdia",
@@ -35,20 +35,24 @@ const download = (catName: string) => {
 };
 
 const CatImage = () => {
-  const [imageSrc, setImageSrc] = createSignal<string | null>(null);
-  const [catName, _setCatName] = createSignal<string>(
+  const [imageSrc, setImageSrc] = React.useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [catName, _setCatName] = React.useState<string>(
     getRandomElement(catNames),
   );
 
-  createEffect(async () => {
-    try {
-      const response = await (await fetch("/api/cat")).json();
-      const catImgUrlPathname = new URL(response[0].url).pathname;
-      setImageSrc(catImgUrlPathname);
-    } catch (error) {
-      console.error("Error fetching cat image:", error);
+  React.useEffect(() => {
+    async function effect() {
+      try {
+        const response = await (await fetch("/api/cat")).json();
+        const catImgUrlPathname = new URL(response[0].url).pathname;
+        setImageSrc(catImgUrlPathname);
+      } catch (error) {
+        console.error("Error fetching cat image:", error);
+      }
     }
-  });
+    effect();
+  }, []);
 
   const drawCatWithLabel = (
     ctx: CanvasRenderingContext2D,
@@ -80,12 +84,12 @@ const CatImage = () => {
 
     const x = 250;
     const y = 450;
-    ctx.strokeText(catName(), x, y);
-    ctx.fillText(catName(), x, y);
+    ctx.strokeText(catName, x, y);
+    ctx.fillText(catName, x, y);
   };
 
-  createEffect(() => {
-    if (imageSrc()) {
+  React.useEffect(() => {
+    if (imageSrc) {
       const canvas = document.getElementById("catCanvas") as HTMLCanvasElement;
       const ctx = canvas.getContext("2d");
       const img = new Image();
@@ -97,14 +101,15 @@ const CatImage = () => {
         }
       };
 
-      img.src = imageSrc()!;
+      img.src = imageSrc!;
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageSrc]);
 
   return (
     <div>
       <canvas id="catCanvas" width="600" height="800"></canvas>
-      <button onClick={() => download(catName())}>Download</button>
+      <button onClick={() => download(catName)}>Download</button>
     </div>
   );
 };

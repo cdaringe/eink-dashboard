@@ -1,15 +1,16 @@
 import http from "http";
-import fs from "node:fs/promises";
 import serveHandler from "serve-handler";
+import * as path from 'path';
 import * as sdk from "../lib/";
 import execa from "execa";
+import { match } from "ts-pattern";
 
 let snapshotInterval = setTimeout(() => void 0, 0);
 
 const logger = sdk.logging.createLogger({ level: "info", name: "edh" });
 const config = sdk.config.createConfig();
 
-logger.log({config});
+logger.log({ config });
 
 const createContext = ({
   url,
@@ -23,63 +24,71 @@ const createContext = ({
   textOverlay: url.searchParams.getAll("textoverlay"),
 });
 
-const handleRequest = async (req: http.IncomingMessage, res: http.ServerResponse) => {
+const state = {
+  lastSnapshotDateMs: Date.now(),
+};
+
+type State = typeof state;
+
+const handleRequest = async (
+  state: State,
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+) => {
   logger.log({ method: req.method, url: req.url, type: "request" });
 
   const url = new URL(
     req.url!,
     `http://${req.headers.host ?? "http://localhost"}`,
   );
-  const [scope, part2, part3] = url.pathname
-    .split("/")
-    .map((it) => it.toLowerCase().trim())
-    .filter(Boolean);
 
   let context = createContext({ url });
 
-  const dashboardBasename = "airquality.png";
-
-  switch (scope) {
-    case "api": {
-      if (part2 === "dashboard" && part3 === "refresh") {
-        if (isSnapshotRunning) {
-          res.statusCode = 409;
-          return res.end(JSON.stringify({ error: "snapshot workflow already running" }));
-        }
-        runSnapWorkflow();
-        res.statusCode = 200;
-        return res.end(JSON.stringify({ ok: true}));
+  match([req.method, url.pathname])
+    .with(["GET", "/api/dashboard/refresh"], () => {
+      if (isSnapshotRunning) {
+        res.statusCode = 409;
+        return res.end(
+          JSON.stringify({ error: "snapshot workflow already running" }),
+        );
       }
-      if (part2 === "dashboard" && part3 === "version") {
-        if (!part3) throw new Error("missing filename");
-        const mtime = await fs.stat(config.snap.grayFilename).then((it) => it.mtime);
-        logger.log({ filename: config.snap.guiAssetsDirname, mtime: mtime.getTime() });
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "text/plain");
-        return res.end(String(mtime.getTime()));
+      runSnapWorkflow(state);
+      res.statusCode = 200;
+      return res.end(JSON.stringify({ ok: true }));
+    })
+    .with(["GET", "/api/dashboard/version"], () => {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "text/plain");
+      const version = state.lastSnapshotDateMs.toString().substr(-12);
+      logger.log({ version });
+      return res.end(version);
+    })
+    .with(["GET", "/dashboard"], async () => {
+      context.filenameToServe = config.snap.grayFilename;
+      if (config.snap.lastSnappedKind === "airquality") {
+        context = await sdk.overlays.battery(context);
+        context = await sdk.overlays.text(context);
       }
+      return sdk.request.streamFile(context, req, res);
+    })
+    .with(["GET", "/public"], () => {
+      return serveHandler(req, res);
+    })
+    .otherwise(() => {
       res.statusCode = 400;
       res.setHeader("Content-Type", "application/json");
-      return res.end(JSON.stringify({ error: "missing valid api action. did you mean any of: [refresh]?" }));
-    }
-    case "dashboard":
-      context.filenameToServe = `./public/${dashboardBasename}`;
-      context = await sdk.overlays.battery(context);
-      context = await sdk.overlays.text(context);
-      return sdk.request.streamFile(context, req, res);
-    case "public":
-      return serveHandler(req, res);
-    default:
-      return serveHandler(req, res, {
-        public: config.snap.guiAssetsDirname,
-      });
-  }
+      return res.end(
+        JSON.stringify({
+          error: "missing valid api action. did you mean any of: [refresh]?",
+        }),
+      );
+    });
 };
 
-const createServer = () =>
-  http.createServer(async (req, res) => {
+const createServer = (state: State) =>
+  http.createServer(async (req, res: http.ServerResponse) => {
     try {
-      await handleRequest(req, res);
+      await handleRequest(state, req, res);
     } catch (error) {
       logger.error(error);
       res.statusCode = 500;
@@ -88,7 +97,7 @@ const createServer = () =>
   });
 
 let isSnapshotRunning = false;
-async function runSnapWorkflow() {
+async function runSnapWorkflow(state: State) {
   if (isSnapshotRunning) {
     return logger.error("snapshot workflow already running");
   }
@@ -96,22 +105,40 @@ async function runSnapWorkflow() {
   clearInterval(snapshotInterval);
   logger.log("running snapshot workflow");
   const intervalMs = config.snap.intervalSeconds * 1000;
+
+  const hour = new Date().getHours();
+  const isOnionHour = hour === 10 || hour === 14;
+
   const proc = execa("node", [config.snap.scriptEntryFilename], {
     stdio: "inherit",
+    env: {
+      PORT: config.dashboardServer.port.toString(),
+      SNAP_URL_PATHNAME: `/dashboard/${isOnionHour ? "onion" : "airquality"}`,
+    }
+  });
+  const dashboardServerProcess = execa('node', [path.basename(config.dashboardServer.entrypoint)], { cwd: path.dirname(config.dashboardServer.entrypoint) , env: { ...process.env, PORT: config.dashboardServer.port.toString() } });
+  dashboardServerProcess.then(() => {
+    config.snap.lastSnappedKind = isOnionHour ? "onion" : "airquality";
+  },logger.error).finally(() => {
+    dashboardServerProcess.kill(9);
   });
   proc.catch(logger.error).finally(() => {
+    state.lastSnapshotDateMs = Date.now();
     isSnapshotRunning = false;
     proc.kill(9);
     logger.log(`next snapshot in ${config.snap.intervalSeconds} seconds`);
     clearInterval(snapshotInterval);
-    snapshotInterval = setTimeout(runSnapWorkflow, intervalMs);
+    snapshotInterval = setTimeout(() => runSnapWorkflow(state), intervalMs);
   });
 }
 
 function main() {
-  createServer().listen(config.port, () => {
+  const state: State = {
+    lastSnapshotDateMs: Date.now(),
+  };
+  createServer(state).listen(config.port, () => {
     logger.log(`server listening on :${config.port}`);
-    runSnapWorkflow();
+    runSnapWorkflow(state);
   });
 }
 

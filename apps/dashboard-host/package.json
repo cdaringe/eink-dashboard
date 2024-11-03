@@ -16,12 +16,12 @@
         "../web-dashboard:build"
       ],
       "files": [
-        "../web-dashboard/dist"
+        "../web-dashboard/.next/standalone"
       ],
       "output": [
         "dist/web-dashboard/**"
       ],
-      "command": "mkdir -p dist/web-dashboard/ && mv ../web-dashboard/dist/* ./dist/web-dashboard/ && ls -al ./dist/web-dashboard"
+      "command": "rm -rf dist/web-dashboard || true && mkdir -p dist && mv ../web-dashboard/.next/standalone ./dist/web-dashboard/ && ls -al ./dist/web-dashboard"
     },
     "start": {
       "dependencies": [
@@ -52,7 +52,8 @@
     "capture-website": "^4.1.0",
     "execa": "^5",
     "puppeteer": "23.3.1",
-    "serve-handler": "6.1.5"
+    "serve-handler": "6.1.5",
+    "ts-pattern": "5.5.0"
   },
   "devDependencies": {
     "@types/finalhandler": "1.2.3",

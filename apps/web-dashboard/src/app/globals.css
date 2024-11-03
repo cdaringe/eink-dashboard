@@ -1,6 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --display-width: 820px;
+  --display-height: 1200px;
+}
+#root {
+  width: var(--display-width);
+  height: var(--display-height);
+  filter: grayscale(100);
+  overflow: hidden;
+}
+
 #panel_grid {
   display: grid;
-  grid-template-rows: 300px 1fr 1fr 30px;
+  grid-template-rows: 0.9fr 1fr 0.9fr 34px;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "panel_1 panel_1"
@@ -13,11 +32,17 @@
 
 #panel_grid iframe {
   border: 0;
-  /* height: 100%; */
-  /* width: 100%; */
-  width: 75%;
+  /**
+   * Make the iframe smaller, then scale it up to original dims s.t. the
+   * iframe content is "zoomed in" on, as grafana UI is quite small.
+   * Make the charts easy to read.
+   */
+  /* width: 75%;
   height: 75%;
-  transform: scale(1.33); /* Scale back to full size */
+  transform: scale(calc(4 / 3)); */
+  width: 60%;
+  height: 60%;
+  transform: scale(calc(5 / 3));
   transform-origin: 0 0; /* Ensure scaling happens from the top-left corner */
   border: none; /* Optional: Remove iframe border */
 }
@@ -29,9 +54,7 @@
   justify-content: space-between;
 }
 
-#panel_logo {
-  height: 100%;
-}
+#panel_logo {}
 
 #panel_1 {
   grid-area: panel_1;

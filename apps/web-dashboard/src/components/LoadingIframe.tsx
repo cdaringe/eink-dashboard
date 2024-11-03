@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal } from "solid-js";
+import React from "react";
 import "./LoadingIframe.css";
 interface LoadingIframeProps {
   src: string;
@@ -8,40 +8,44 @@ interface LoadingIframeProps {
   onLoad?: () => void;
 }
 
-const LoadingIframe: Component<LoadingIframeProps> = ({
+const LoadingIframe: React.FC<LoadingIframeProps> = ({
   label,
   src,
   class: className,
   id,
-  onLoad
+  onLoad,
 }) => {
-  const [loading, setLoading] = createSignal(true);
-  createEffect(() => {
-    if (!loading()) {
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    if (!loading) {
       onLoad?.();
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <>
-      {loading() && (
+      {loading && (
         <div
-          id={`${id}${loading() ? "" : "_loader"}`}
-          class={[className, "lifr-loading-container"].join(" ")}
+          id={`${id}${loading ? "" : "_loader"}`}
+          className={[className, "lifr-loading-container"].join(" ")}
         >
           <span>{`Loading ${label}...`}</span>
-          <div class="lifr-spinner"></div>
+          <div className="lifr-spinner"></div>
         </div>
       )}
       <iframe
-        id={`${id}${loading() ? "_loading" : ""}`}
-        class={className}
+        id={`${id}${loading ? "_loading" : ""}`}
+        className={className}
         src={src}
         style={{
-          display: loading() ? "none" : "block",
+          display: loading ? "none" : "block",
         }}
-        onLoad={() => setLoading(false)}
-      ></iframe>
+        onLoad={() => {
+          setLoading(false);
+        }}
+      >
+      </iframe>
     </>
   );
 };

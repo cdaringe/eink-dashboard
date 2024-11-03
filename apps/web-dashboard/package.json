@@ -1,26 +1,31 @@
 {
-  "name": "@eink-dashboard/web-dashboard",
+  "name": "web-dashboard-next",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "format": "prettier --write .",
-    "preview": "vite preview"
+    "dev": "next dev --turbopack",
+    "build": "next build && mv .next/static .next/standalone/apps/web-dashboard/.next/static",
+    "_build": "next build && echo 'de-nesting weird .next structure and copying in static assets' && mv .next/standalone .next/standalone_tmp && mv .next/standalone_tmp/apps/web-dashboard .next/standalone && mv .next/static .next/standalone/.next/static",
+    "start-prod": "cd .next/standalone && node ./server.js",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "solid-js": "^1.8.20"
+    "@eink-dashboard/common": "workspace:*",
+    "@extractus/feed-extractor": "7.1.3",
+    "next": "15.0.2",
+    "react": "19.0.0-rc-02c0e824-20241028",
+    "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react-qr-code": "2.0.15"
   },
   "devDependencies": {
-    "@eink-dashboard/common": "workspace:*",
-    "@types/express": "4.17.21",
-    "express": "4.19.2",
-    "prettier": "3.3.3",
-    "ts-node": "10.9.2",
-    "tsx": "4.17.0",
-    "typescript": "^5.5.3",
-    "vite": "^5.4.1",
-    "vite-plugin-solid": "^2.10.2"
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.2",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }

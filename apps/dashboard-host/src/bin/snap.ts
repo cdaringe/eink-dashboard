@@ -17,13 +17,14 @@ async function main() {
   /**
    * Visit the eink-dashboard-host server and take a snapshot of the dashboard.
    */
-  const imageUrl = `${config.snap.url.origin}${config.snap.url.pathname}${config.snap.url.search}`;
+  const imageUrl =
+    `${config.snap.url.hostname}:${config.snap.url.port}${config.snap.url.pathname}`;
   logger.log(`starting snapshot ${imageUrl}`);
   await cw.file(imageUrl, colorFilename, {
     ...config.display.dims,
     element: "#root",
     overwrite: true,
-    waitForElement: '.snapshot_ready',
+    waitForElement: ".snapshot_ready",
     delay: 20,
     scaleFactor: config.os === "macos" ? 1 : undefined,
     timeout: 60_000 * 2,

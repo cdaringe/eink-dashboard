@@ -4,22 +4,22 @@ import path from "node:path";
 
 /**
  * ENV supported configuration options.
-*/
+ */
 const PORT = process.env.PORT ?? "8000";
 const {
+  DASHBOARD_SERVER_PORT = "8001",
   DISPLAY_WIDTH = "820",
   DISPLAY_HEIGHT = "1200",
   SNAP_INTERVAL_S = String(60 * 60),
   SNAP_WRITE_DIRNAME = "./public",
-  SNAP_URL_ORIGIN = `http://localhost:${PORT}`,
+  SNAP_URL_HOSTNAME = `http://localhost`,
   SNAP_URL_PATHNAME = "/",
-  SNAP_URL_SEARCH = "?kind=airquality",
   SNAP_TZ = process.env.TZ,
-  SNAP_IMAGE_BASENAME = "airquality.png",
+  SNAP_IMAGE_BASENAME = "snapshot.png",
 } = process.env;
 
 const SNAP_SCRIPT_RELATIVE_FILENAME = `./dist/bin/snap.js`;
-const DASHBOARD_GUI_ASSETS_RELATIVE_DIRNAME = `./dist/web-dashboard`;
+const DASHBOARD_NODEJS_SERVER_ENTRYPOINT = `./dist/web-dashboard/apps/web-dashboard/server.js`;
 
 export type Config = {
   os: "linux" | "macos";
@@ -30,13 +30,17 @@ export type Config = {
     };
   };
   port: number;
+  dashboardServer: {
+    entrypoint: string;
+    port: number;
+  },
   snap: {
+    lastSnappedKind?: "onion" | "airquality";
     url: {
-      origin: string;
+      hostname: string;
+      port: number;
       pathname: string;
-      search: string;
     };
-    guiAssetsDirname: string;
     imageBasename: string;
     intervalSeconds: number;
     scriptEntryFilename: string;
@@ -59,22 +63,25 @@ export const createConfig = (config?: Partial<Config>): Config => {
         ...config?.display?.dims,
       },
     },
+    dashboardServer: {
+      entrypoint: DASHBOARD_NODEJS_SERVER_ENTRYPOINT,
+      port: Number(DASHBOARD_SERVER_PORT),
+    },
     snap: {
       imageBasename: SNAP_IMAGE_BASENAME,
       timezone: SNAP_TZ,
       url: {
-        origin: SNAP_URL_ORIGIN,
+        hostname: SNAP_URL_HOSTNAME,
+        port: Number(DASHBOARD_SERVER_PORT),
         pathname: SNAP_URL_PATHNAME,
-        search: SNAP_URL_SEARCH,
       },
       writeDirname: SNAP_WRITE_DIRNAME,
-      guiAssetsDirname: DASHBOARD_GUI_ASSETS_RELATIVE_DIRNAME,
       scriptEntryFilename: SNAP_SCRIPT_RELATIVE_FILENAME,
       intervalSeconds: Number(SNAP_INTERVAL_S),
       ...config?.snap,
       get grayFilename() {
-        return `${this.writeDirname}/${path.basename(this.imageBasename)}`
-      }
+        return `${this.writeDirname}/${path.basename(this.imageBasename)}`;
+      },
     },
   };
 };
