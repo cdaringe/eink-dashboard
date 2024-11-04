@@ -10,6 +10,8 @@ copy --chown=node:users libs/eink-dashboard-common/package.json ./libs/eink-dash
 run tree
 
 # install
+env PUPPETEER_SKIP_CHROME_DOWNLOAD=true
+env PUPPETEER_SKIP_CHROME_HEADLESS_SHELL_DOWNLOAD=true
 run --mount=type=cache,id=pnpm,target=/pnpm/store NODE_ENV=development pnpm install --frozen-lockfile
 # @warn this version must match that in apps/dashboard-host/package.json!
 # run set -x && pnpm dlx puppeteer@23.3.1 install chrome --install-deps
@@ -25,4 +27,6 @@ run pnpm run clean \
 workdir /app/apps/dashboard-host
 env NODE_ENV=production
 env TZ=America/Los_Angeles
+env NODE_PATH="./node_modules;$(npm root -g)"
+env PUPPETEER_EXECUTABLE_PATH=/opt/google/chrome/chrome
 cmd ["node", "dist/bin/host.js"]

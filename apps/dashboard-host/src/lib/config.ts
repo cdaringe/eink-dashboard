@@ -12,14 +12,15 @@ const {
   DISPLAY_HEIGHT = "1200",
   SNAP_INTERVAL_S = String(60 * 60),
   SNAP_WRITE_DIRNAME = "./public",
-  SNAP_URL_HOSTNAME = `http://localhost`,
+  SNAP_URL_HOSTNAME = `http://0.0.0.0`,
   SNAP_URL_PATHNAME = "/",
   SNAP_TZ = process.env.TZ,
   SNAP_IMAGE_BASENAME = "snapshot.png",
 } = process.env;
 
 const SNAP_SCRIPT_RELATIVE_FILENAME = `./dist/bin/snap.js`;
-const DASHBOARD_NODEJS_SERVER_ENTRYPOINT = `./dist/web-dashboard/apps/web-dashboard/server.js`;
+const DASHBOARD_NODEJS_SERVER_ENTRYPOINT =
+  `./dist/web-dashboard/apps/web-dashboard/server.js`;
 
 export type Config = {
   os: "linux" | "macos";
@@ -33,7 +34,7 @@ export type Config = {
   dashboardServer: {
     entrypoint: string;
     port: number;
-  },
+  };
   snap: {
     lastSnappedKind?: "onion" | "airquality";
     url: {

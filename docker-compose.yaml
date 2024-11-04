@@ -15,11 +15,11 @@ services:
       # SEE ./apps/dashboard-host/src/lib/config.ts for many configuration options!
       - PORT=8000
       - SNAP_INTERVAL_S=1800 # 30 minutes
-      # DISPLAY_WIDTH = "820",
-      # DISPLAY_HEIGHT = "1200",
-      # SNAP_WRITE_DIRNAME = "./public",
-      # SNAP_URL_ORIGIN = `http://localhost:${PORT}`,
-      # SNAP_URL_PATHNAME = "/",
-      # SNAP_URL_SEARCH = "?kind=airquality",
-      # SNAP_TZ = process.env.TZ,
-      # SNAP_IMAGE_BASENAME = "airquality.png",
+# DISPLAY_WIDTH = "820",
+# DISPLAY_HEIGHT = "1200",
+# SNAP_WRITE_DIRNAME = "./public",
+# SNAP_URL_ORIGIN = `http://localhost:${PORT}`,
+# SNAP_URL_PATHNAME = "/",
+# SNAP_URL_SEARCH = "?kind=airquality",
+# SNAP_TZ = process.env.TZ,
+# SNAP_IMAGE_BASENAME = "airquality.png",

@@ -22,7 +22,9 @@ export const Onion: React.FC<{
           src="https://theonion.com/wp-content/uploads/2024/07/site-logo.svg"
           width={400}
           height={50}
-          onLoad={() => { setIsReady(true); }}
+          onLoad={() => {
+            setIsReady(true);
+          }}
         />
       </header>
       <ul>

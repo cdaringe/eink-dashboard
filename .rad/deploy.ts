@@ -9,7 +9,7 @@ export const deploy: Task = {
     const destDir = "/volume1/docker/eink-dashboard";
     const publicDir = `${destDir}/apps/dashboard-host/public`;
     const ssh = (...args: string[]) => `ssh ${ip} -- ${args.join(" ")}`;
-    await ssh(`mkdir -p ${destDir}`);
+    await ssh(`rm -rf ${destDir} || true && mkdir -p ${destDir}`);
     logger.info("syncing");
     await sh(
       [

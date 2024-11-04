@@ -2,10 +2,10 @@
 
 Applications to support generating and hosting content for an `e-ink` dashboard.
 
-Looking for the firmware? See [cdaringe/eink-dashboard-firmware](https://github.com/cdaringe/eink-dashboard-firmware).
+Looking for the firmware? See
+[cdaringe/eink-dashboard-firmware](https://github.com/cdaringe/eink-dashboard-firmware).
 
-Here's an example dashboard:
-![](./demo.png)
+Here's an example dashboard: ![](./demo.png)
 
 ## usage
 
@@ -14,12 +14,15 @@ be refactored to be more "librarified". Until then, here's the scoop:
 
 ### run
 
-- (optional) install [rad](https://github.com/cdaringe/rad/?tab=readme-ov-file#install)
-  (e.g.
+- (optional) install
+  [rad](https://github.com/cdaringe/rad/?tab=readme-ov-file#install) (e.g.
   `curl -fsSL https://raw.githubusercontent.com/cdaringe/rad/main/assets/install.sh | sh`)
-- `rad dockerRun`, or, just good ol' the `docker compose up --build --force-recreate`
-  - Out of the box it won't _do_ much until you configure things. Please see the [#develop](#develop)
+- `rad dockerRun`, or, just good ol' the
+  `docker compose up --build --force-recreate`
+  - Out of the box it won't _do_ much until you configure things. Please see the
+    [#develop](#develop)
 
 ### develop
 
-Please see the docs in [apps/dashboard-host/readme.md](./apps/dashboard-host/readme.md)!
+Please see the docs in
+[apps/dashboard-host/readme.md](./apps/dashboard-host/readme.md)!

@@ -1,9 +1,10 @@
 import http from "http";
 import serveHandler from "serve-handler";
-import * as path from 'path';
+import * as path from "path";
 import * as sdk from "../lib/";
 import execa from "execa";
 import { match } from "ts-pattern";
+import waitOn from "wait-on";
 
 let snapshotInterval = setTimeout(() => void 0, 0);
 
@@ -109,23 +110,52 @@ async function runSnapWorkflow(state: State) {
   const hour = new Date().getHours();
   const isOnionHour = hour === 10 || hour === 14;
 
+  const dashboardServerProcess = execa("node", [
+    path.basename(config.dashboardServer.entrypoint),
+  ], {
+    stdio: "inherit",
+    cwd: path.dirname(config.dashboardServer.entrypoint),
+    env: {
+      ...process.env,
+      /**
+       * @warn critical to bind to all interfaces. secret next.js api.
+       */
+      HOSTNAME: "0.0.0.0",
+      PORT: config.dashboardServer.port.toString(),
+    },
+  });
+  dashboardServerProcess.then(() => {
+    config.snap.lastSnappedKind = isOnionHour ? "onion" : "airquality";
+  }, logger.error).finally(() => {
+    logger.log("dashboard server down");
+    dashboardServerProcess.kill(9);
+  });
+  const pathname = `/dashboard/${isOnionHour ? "onion" : "airquality"}`;
+  const waitOnURI =
+    `http://localhost:${config.dashboardServer.port}${pathname}`;
+  logger.log(`waiting on ${waitOnURI}`);
+  await waitOn({
+    resources: [waitOnURI],
+    timeout: 30_000,
+  });
   const proc = execa("node", [config.snap.scriptEntryFilename], {
     stdio: "inherit",
     env: {
+      ...process.env,
       PORT: config.dashboardServer.port.toString(),
-      SNAP_URL_PATHNAME: `/dashboard/${isOnionHour ? "onion" : "airquality"}`,
-    }
-  });
-  const dashboardServerProcess = execa('node', [path.basename(config.dashboardServer.entrypoint)], { cwd: path.dirname(config.dashboardServer.entrypoint) , env: { ...process.env, PORT: config.dashboardServer.port.toString() } });
-  dashboardServerProcess.then(() => {
-    config.snap.lastSnappedKind = isOnionHour ? "onion" : "airquality";
-  },logger.error).finally(() => {
-    dashboardServerProcess.kill(9);
+      SNAP_URL_PATHNAME: pathname,
+    },
   });
   proc.catch(logger.error).finally(() => {
     state.lastSnapshotDateMs = Date.now();
     isSnapshotRunning = false;
     proc.kill(9);
+    dashboardServerProcess.kill();
+    setTimeout(() => {
+      try {
+        dashboardServerProcess.kill(9);
+      } catch {}
+    }, 1_000);
     logger.log(`next snapshot in ${config.snap.intervalSeconds} seconds`);
     clearInterval(snapshotInterval);
     snapshotInterval = setTimeout(() => runSnapWorkflow(state), intervalMs);
