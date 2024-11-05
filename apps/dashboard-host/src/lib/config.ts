@@ -36,7 +36,7 @@ export type Config = {
     port: number;
   };
   snap: {
-    lastSnappedKind?: "onion" | "airquality";
+    lastSnappedKind?: "onion" | "airquality" | "recipes";
     url: {
       hostname: string;
       port: number;

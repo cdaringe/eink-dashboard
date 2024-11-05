@@ -27,7 +27,7 @@
       "dependencies": [
         "build"
       ],
-      "command": "node ./dist/bin/host.js"
+      "command": "dotenvx run -f ../../.env -- node ./dist/bin/host.js"
     },
     "typecheck": {
       "command": "tsc --noEmit",
@@ -57,6 +57,7 @@
     "wait-on": "8.0.1"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "1.22.0",
     "@types/finalhandler": "1.2.3",
     "@types/serve-handler": "6.1.4",
     "esbuild": "^0.23.1",

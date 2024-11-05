@@ -11,8 +11,8 @@ export default function Home() {
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         {[{
-          url: "/dashboard/cat",
-          label: "Cat",
+          url: "/dashboard/recipes",
+          label: "Recipes",
           icon: "/window.svg",
         }, {
           url: "/dashboard/onion",

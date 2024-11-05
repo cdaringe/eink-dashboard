@@ -27,7 +27,7 @@ export const deploy: Task = {
       "/usr/local/bin/docker-compose down",
       "echo building and running app",
       "/usr/local/bin/docker-compose build",
-      "/usr/local/bin/docker-compose -f docker-compose.yaml up -d --build --force-recreate",
+      "/usr/local/bin/docker-compose --env-file .env -f docker-compose.yaml up -d --build --force-recreate",
     ].join(" && ");
     const remoteCmd = `echo '${cmd}' | ssh ${sshUser}@${ip}`;
     logger.info(remoteCmd);

@@ -108,7 +108,9 @@ async function runSnapWorkflow(state: State) {
   const intervalMs = config.snap.intervalSeconds * 1000;
 
   const hour = new Date().getHours();
-  const isOnionHour = hour === 10 || hour === 14;
+  const options = ['airquality', 'onion', 'recipes'] as const;
+
+  const option = options[hour % options.length]
 
   const dashboardServerProcess = execa("node", [
     path.basename(config.dashboardServer.entrypoint),
@@ -125,12 +127,12 @@ async function runSnapWorkflow(state: State) {
     },
   });
   dashboardServerProcess.then(() => {
-    config.snap.lastSnappedKind = isOnionHour ? "onion" : "airquality";
+    config.snap.lastSnappedKind = option;
   }, logger.error).finally(() => {
     logger.log("dashboard server down");
     dashboardServerProcess.kill(9);
   });
-  const pathname = `/dashboard/${isOnionHour ? "onion" : "airquality"}`;
+  const pathname = `/dashboard/${option}`;
   const waitOnURI =
     `http://localhost:${config.dashboardServer.port}${pathname}`;
   logger.log(`waiting on ${waitOnURI}`);
