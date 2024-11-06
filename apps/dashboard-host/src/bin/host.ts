@@ -98,6 +98,8 @@ const createServer = (state: State) =>
   });
 
 let isSnapshotRunning = false;
+const dashboardOptions = ['airquality', 'onion', 'recipes'] as const;
+let snapIndex = new Date().getHours();
 async function runSnapWorkflow(state: State) {
   if (isSnapshotRunning) {
     return logger.error("snapshot workflow already running");
@@ -107,10 +109,9 @@ async function runSnapWorkflow(state: State) {
   logger.log("running snapshot workflow");
   const intervalMs = config.snap.intervalSeconds * 1000;
 
-  const hour = new Date().getHours();
-  const options = ['airquality', 'onion', 'recipes'] as const;
-
-  const option = options[hour % options.length]
+  ++snapIndex;
+  snapIndex = snapIndex % dashboardOptions.length;
+  const option = dashboardOptions[snapIndex]
 
   const dashboardServerProcess = execa("node", [
     path.basename(config.dashboardServer.entrypoint),
