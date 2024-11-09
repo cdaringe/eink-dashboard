@@ -98,7 +98,7 @@ const createServer = (state: State) =>
   });
 
 let isSnapshotRunning = false;
-const dashboardOptions = ['airquality', 'onion', 'recipes'] as const;
+const dashboardOptions = ["airquality", "onion", "recipes"] as const;
 let snapIndex = new Date().getHours();
 async function runSnapWorkflow(state: State) {
   if (isSnapshotRunning) {
@@ -111,7 +111,7 @@ async function runSnapWorkflow(state: State) {
 
   ++snapIndex;
   snapIndex = snapIndex % dashboardOptions.length;
-  const option = dashboardOptions[snapIndex]
+  const option = dashboardOptions[snapIndex];
 
   const dashboardServerProcess = execa("node", [
     path.basename(config.dashboardServer.entrypoint),

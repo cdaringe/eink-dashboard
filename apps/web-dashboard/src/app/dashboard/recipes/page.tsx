@@ -8,8 +8,8 @@ const { NYT_API_KEY } = process.env;
 type ResponseOk = { status: "OK"; response: { docs: RecipeRoot[] } };
 
 type Response =
-| ResponseOk
-| { status: "ERROR"; body: unknown };
+  | ResponseOk
+  | { status: "ERROR"; body: unknown };
 
 const getData = () => {
   if (true) {
@@ -21,10 +21,10 @@ const getData = () => {
     url.searchParams.set("api-key", NYT_API_KEY!);
     url.searchParams.set("sort", "newest");
     return fetch(url.toString())
-    .then((res) => res.json())
-    .then((result) => result as ResponseOk, (err) => {
-      return { status: "ERROR", body: String(err) } as Response;
-    });
+      .then((res) => res.json())
+      .then((result) => result as ResponseOk, (err) => {
+        return { status: "ERROR", body: String(err) } as Response;
+      });
   }
   // return fetchData();
 };
