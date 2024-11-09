@@ -1,6 +1,7 @@
 import React from "react";
 import { Onion } from "../../../components/Onion";
 import { extract } from "@extractus/feed-extractor";
+import { connection } from "next/server";
 
 export type Entry = {
   /**
@@ -20,6 +21,7 @@ export type Entry = {
 };
 
 const OnionPage: React.FC = async ({}) => {
+  await connection();
   const rss = await extract("https://theonion.com/feed/", {})
     .then((result) => {
       return { ok: true, value: result as { entries: Entry[] } } as const;
