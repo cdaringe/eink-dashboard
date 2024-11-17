@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
 import { config } from "@eink-dashboard/common";
-import logo from "../assets/logo.png";
 import LoadingIframe from "./LoadingIframe";
-import Image from "next/image";
+import { Header } from "./Header";
 
 const AirQuality: React.FC<
   {
@@ -29,23 +28,16 @@ const AirQuality: React.FC<
       `${config.airGrafanaUri}/d-solo/d46HuYvnz/freshawair?orgId=1&theme=${theme}&from=${from}&to=${to}&panelId=${panelId}`,
   );
   return (
-    <div id="panel_grid">
-      <header id="panel_header" className="flex items-center justify-center">
-        {/* When the logo is shown, we're ready! */}
-        {loadCount >= 4
-          ? (
-            <Image
-              id="panel_logo"
-              alt=""
-              className="w-[24px] ml-1 snapshot_ready object-contain"
-              src={logo}
-            />
-          )
-          : <span>Loaded {loadCount}</span>}
-        <div>
-          {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
-        </div>
-      </header>
+    <div id="panel_grid" className="airquality">
+      <Header
+        logo={(props, Image) =>
+          /* When the logo is shown, we're ready! */
+          loadCount >= 4
+            // eslint-disable-next-line jsx-a11y/alt-text
+            ? <Image {...props} />
+            : <span>Loaded {loadCount}</span>}
+      >
+      </Header>
       <LoadingIframe
         onLoad={incrLoadCount}
         id="panel_1"

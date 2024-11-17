@@ -18,6 +18,11 @@ body {
 }
 
 #panel_grid {
+  height: 1200px;
+  width: 820px;
+}
+
+#panel_grid.airquality {
   display: grid;
   grid-template-rows: 0.9fr 1fr 0.9fr 34px;
   grid-template-columns: 1fr 1fr;
@@ -26,11 +31,9 @@ body {
     "panel_2 panel_3"
     "panel_4 panel_4"
     "panel_header panel_header";
-  height: 1200px;
-  width: 820px;
 }
 
-#panel_grid iframe {
+#panel_grid.airquality iframe {
   border: 0;
   /**
    * Make the iframe smaller, then scale it up to original dims s.t. the
@@ -45,6 +48,15 @@ body {
   transform: scale(calc(5 / 3));
   transform-origin: 0 0; /* Ensure scaling happens from the top-left corner */
   border: none; /* Optional: Remove iframe border */
+}
+
+#panel_grid.onion {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "panel_1 panel_1"
+    "panel_header panel_header";
 }
 
 #panel_header {
