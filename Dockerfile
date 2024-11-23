@@ -20,8 +20,7 @@ run --mount=type=cache,id=pnpm,target=/pnpm/store NODE_ENV=development pnpm inst
 copy --chown=node:users ./ .
 
 # build
-run pnpm run clean \
-  && pnpm -r --filter ./apps/dashboard-host/ run build \
+run pnpm -r --filter ./apps/dashboard-host/ run build \
   && tree apps/dashboard-host/dist
 
 workdir /app/apps/dashboard-host

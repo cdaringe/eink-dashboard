@@ -1,3 +1,4 @@
+import { clean } from "./.rad/clean.ts";
 import { Task, Tasks } from "./.rad/common.ts";
 import { deploy } from "./.rad/deploy.ts";
 
@@ -16,7 +17,6 @@ const dockerRun: Task = {
 
 const format: Task = `deno fmt`;
 
-const clean: Task = `pnpm dlx del-cli libs/*/dist apps/*/dist`;
 
 const dev: Task = {
   fn: ({ sh }) => sh(`cd apps/dashboard-host && echo $PWD && pnpm run start`),

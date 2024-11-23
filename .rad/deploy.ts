@@ -1,7 +1,8 @@
+import { clean } from "./clean.ts";
 import type { Task } from "./common.ts";
 
 export const deploy: Task = {
-  dependsOn: [],
+  dependsOn: [clean],
   async fn({ sh, logger }) {
     const ip = Deno.env.get("NAS_IP");
     const sshUser = "cdaringe";
