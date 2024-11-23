@@ -9,7 +9,7 @@
 - applies image overlays (such as battery life) on top of web-scraped images
 
 <p align="center">
-<img style="display:block" src="./img/dashboard.png" width=200 />
+<img src="./img/dashboard.png" width=200 /><br/>
 <caption>Example of a possible dashboard image. Recipes, weather, news--whatever you need.</capture>
 </p>
 <br/>
