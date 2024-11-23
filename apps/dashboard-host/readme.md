@@ -8,10 +8,10 @@
   - this feature is optional--you can use any URI
 - applies image overlays (such as battery life) on top of web-scraped images
 
-<div style="margin: auto; width: 100%">
+<p align="center">
 <img style="display:block" src="./img/dashboard.png" width=200 />
 <caption>Example of a possible dashboard image. Recipes, weather, news--whatever you need.</capture>
-</div>
+</p>
 <br/>
 
 **@warning**: This server is insecure. Do not deploy this in untrusted
