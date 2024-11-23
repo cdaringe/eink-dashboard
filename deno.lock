@@ -1,5 +1,5 @@
 {
-  "version": "3",
+  "version": "4",
   "redirects": {
     "https://deno.land/x/rad/src/mod.ts": "https://deno.land/x/rad@v6.11.0/src/mod.ts"
   },
@@ -88,5 +88,14 @@
     "https://deno.land/x/rad@v6.11.0/src/util/reroot.ts": "525d076831a49ffcde7d2d3e3a1f862641e654143017c8a9721656e1f8106d4f",
     "https://deno.land/x/rad@v6.11.0/src/util/sh.ts": "fed49dbe0cd287c1d4d79154891b90e1ade7133730c2f1e4d047ace06ea9f7c5",
     "https://deno.land/x/rad@v6.11.0/src/util/timer.ts": "c4178ebc9d21c791ecbae8c082a10c74f0ad9ace364d10e90058e3c73c574838"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:del-cli@5.1.0",
+        "npm:prettier@3.3.3",
+        "npm:wireit@0.14.9"
+      ]
+    }
   }
 }

@@ -66,10 +66,8 @@ const handleRequest = async (
     })
     .with(["GET", "/dashboard"], async () => {
       context.filenameToServe = config.snap.grayFilename;
-      if (config.snap.lastSnappedKind === "airquality") {
-        context = await sdk.overlays.battery(context);
-        context = await sdk.overlays.text(context);
-      }
+      context = await sdk.overlays.battery(context);
+      context = await sdk.overlays.text(context);
       return sdk.request.streamFile(context, req, res);
     })
     .with(["GET", "/public"], () => {

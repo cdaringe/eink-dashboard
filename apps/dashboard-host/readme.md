@@ -8,6 +8,12 @@
   - this feature is optional--you can use any URI
 - applies image overlays (such as battery life) on top of web-scraped images
 
+<div style="margin: auto; width: 100%">
+<img style="display:block" src="./img/dashboard.png" width=200 />
+<caption>Example of a possible dashboard image. Recipes, weather, news--whatever you need.</capture>
+</div>
+<br/>
+
 **@warning**: This server is insecure. Do not deploy this in untrusted
 environments. Moderate amounts of unsanitized user-input is fed into shell
 executions!
@@ -25,11 +31,16 @@ Please see the [config module](./src/lib/config.ts) for ENV vars you can use to
 fine tune the workflow. You may also study the
 [the docker-compose.yml](../../docker-compose.yaml) for references.
 
+## view it!
+
+Visit the local website, e.g.:
+http://localhost:8000/dashboard?batteryoverlay=33,540,1172,x24
+
 ## api
 
 When accessing the server to download images, you can add overlays!
 
-![overlay features](./features.png)
+![overlay features](./img/features.png)
 
 Overlays are query-param driven.
 

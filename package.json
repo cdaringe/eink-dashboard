@@ -1,7 +1,7 @@
 {
   "name": "eink-dashboard-workspace",
   "scripts": {
-    "clean": "del-cli libs/*/dist apps/*/dist"
+    "__all__": "printf 'Please see:\n  rad -l info --list\n\n'"
   },
   "devDependencies": {
     "del-cli": "5.1.0",

@@ -7,7 +7,7 @@ export const deploy: Task = {
     const sshUser = "cdaringe";
     if (!ip) throw new Error(`missing NAS_IP env var`);
     const destDir = "/volume1/docker/eink-dashboard";
-    const publicDir = `${destDir}/apps/dashboard-host/public`;
+    // const publicDir = `${destDir}/apps/dashboard-host/public`;
     const ssh = (...args: string[]) => `ssh ${ip} -- ${args.join(" ")}`;
     await ssh(`rm -rf ${destDir} || true && mkdir -p ${destDir}`);
     logger.info("syncing");
