@@ -9,6 +9,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+      - "8001:8001"
     # volumes:
     #   - ./apps/dashboard-host/public:/app/apps/dashboard-host/public:rw
     environment:
