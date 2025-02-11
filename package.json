@@ -5,10 +5,10 @@
   },
   "devDependencies": {
     "del-cli": "5.1.0",
-    "prettier": "3.3.3",
-    "wireit": "0.14.9"
+    "prettier": "3.5.0",
+    "wireit": "0.14.11"
   },
-  "packageManager": "pnpm@9.10.0",
+  "packageManager": "pnpm@9.15.5",
   "pnpm": {
     "patchedDependencies": {
       "capture-website": "patches/capture-website.patch"
