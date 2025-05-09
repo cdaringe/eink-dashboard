@@ -32,15 +32,27 @@ export const Recipes: React.FC<{
         </header>
         <ul>
           {recipes.map((item) => {
-            const multimedia = item.multimedia.find((it) => it.url);
+            const multimedia = item.multimedia.thumbnail
             const headline = item.headline.main.length > 50
               ? `${item.headline.main.slice(0, 50)}...`
               : item.headline.main;
-            const paragraph = item.lead_paragraph.length > 220
-              ? `${item.lead_paragraph.slice(0, 220)}...`
-              : item.lead_paragraph;
+            const paragraph = item.abstract.length > 220
+              ? `${item.abstract.slice(0, 220)}...`
+              : item.abstract;
             return (
               <li key={item._id} className="p-2 flex items-center w-full h-32">
+                {multimedia
+                  ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      className="w-[100px] ml-1"
+                      src={multimedia.url}
+                      alt="sneak peek"
+                      width={100}
+                      height={100}
+                    />
+                  )
+                  : null}
                 <div className="overflow-hidden h-full flex-1 pr-1">
                   <span className="text-xs italic block">
                     Published: {new Date(item.pub_date).toLocaleDateString()}
@@ -49,17 +61,6 @@ export const Recipes: React.FC<{
                   {/* <span className="ml-2">// {item.headline.kicker}</span> */}
                   <p>{paragraph}</p>
                 </div>
-                {multimedia
-                  ? (
-                    <Image
-                      className="w-[100px] ml-1"
-                      src={`https://www.nytimes.com/${multimedia.url}`}
-                      alt="sneak peek"
-                      width={100}
-                      height={100}
-                    />
-                  )
-                  : null}
                 <div>
                   <QRCode
                     className="w-[100px] ml-1"
@@ -82,7 +83,9 @@ export interface RecipeRoot {
   snippet: string;
   lead_paragraph: string;
   source: string;
-  multimedia: Multimedum[];
+  multimedia: {
+    default: Multimedum; thumbnail?: Multimedum;
+  }
   headline: Headline;
   keywords: Keyword[];
   pub_date: string;
@@ -98,14 +101,14 @@ export interface RecipeRoot {
 }
 
 export interface Multimedum {
-  rank: number;
-  subtype: string;
-  type: string;
+  // rank: number;
+  // subtype: string;
+  // type: string;
   url: string;
   height: number;
   width: number;
-  subType: string;
-  crop_name: string;
+  // subType: string;
+  // crop_name: string;
 }
 
 export interface Headline {

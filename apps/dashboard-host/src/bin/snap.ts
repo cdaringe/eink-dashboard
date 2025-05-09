@@ -17,8 +17,7 @@ async function main() {
   /**
    * Visit the eink-dashboard-host server and take a snapshot of the dashboard.
    */
-  const imageUrl =
-    `${config.snap.url.hostname}:${config.snap.url.port}${config.snap.url.pathname}`;
+  const imageUrl = `${config.snap.url.hostname}:${config.snap.url.port}${config.snap.url.pathname}`;
   logger.log(`starting snapshot ${imageUrl}`);
   await cw.file(imageUrl, colorFilename, {
     ...config.display.dims,

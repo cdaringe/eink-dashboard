@@ -7,6 +7,7 @@ import path from "node:path";
  */
 const PORT = process.env.PORT ?? "8000";
 const {
+  NODE_ENV,
   DASHBOARD_SERVER_PORT = "8001",
   DISPLAY_WIDTH = "820",
   DISPLAY_HEIGHT = "1200",
@@ -19,8 +20,6 @@ const {
 } = process.env;
 
 const SNAP_SCRIPT_RELATIVE_FILENAME = `./dist/bin/snap.js`;
-const DASHBOARD_NODEJS_SERVER_ENTRYPOINT =
-  `./dist/web-dashboard/apps/web-dashboard/server.js`;
 
 export type Config = {
   os: "linux" | "macos";
@@ -32,7 +31,9 @@ export type Config = {
   };
   port: number;
   dashboardServer: {
-    entrypoint: string;
+    bin: string;
+    cwd: string;
+    args: string[];
     port: number;
   };
   snap: {
@@ -64,8 +65,16 @@ export const createConfig = (config?: Partial<Config>): Config => {
         ...config?.display?.dims,
       },
     },
-    dashboardServer: {
-      entrypoint: DASHBOARD_NODEJS_SERVER_ENTRYPOINT,
+    dashboardServer: NODE_ENV ? {
+      bin: "node",
+      cwd: path.resolve(process.cwd(), './dist/web-dashboard/apps/web-dashboard'),
+      args: ['server.js'],
+      port: Number(DASHBOARD_SERVER_PORT),
+    } : {
+      bin: "npm",
+      cwd: path.resolve(process.cwd(), '../web-dashboard'),
+        args: [
+          'run','dev'],
       port: Number(DASHBOARD_SERVER_PORT),
     },
     snap: {

@@ -17,11 +17,19 @@ const getData = () => {
     const url = new URL(
       "https://api.nytimes.com/svc/search/v2/articlesearch.json",
     );
-    url.searchParams.set("fq", 'type_of_material:("Recipe")');
+    url.searchParams.set("fq", 'typeOfMaterials:("Recipe")');
     url.searchParams.set("api-key", NYT_API_KEY!);
     url.searchParams.set("sort", "newest");
     return fetch(url.toString())
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (!res.ok) {
+          console.error(await res.text().catch(() => "UNKNOWN ERROR"));
+          throw new Error(res.statusText);
+
+        }
+        const result = await  res.json();
+        return result;
+      })
       .then((result) => result as ResponseOk, (err) => {
         return { status: "ERROR", body: String(err) } as Response;
       });

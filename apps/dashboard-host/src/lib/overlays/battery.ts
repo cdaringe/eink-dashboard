@@ -4,8 +4,8 @@ import * as convert from "../convert";
 
 const getImagePrefix = (batteryPercent: number) =>
   Number.isSafeInteger(batteryPercent) &&
-    batteryPercent >= 0 &&
-    batteryPercent <= 100
+  batteryPercent >= 0 &&
+  batteryPercent <= 100
     ? batteryPercent
     : "unknown";
 const getImageBasename = (batteryPercent: number) =>

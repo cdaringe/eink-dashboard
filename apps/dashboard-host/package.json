@@ -57,7 +57,6 @@
     "wait-on": "8.0.1"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "1.22.0",
     "@types/finalhandler": "1.2.3",
     "@types/serve-handler": "6.1.4",
     "esbuild": "^0.23.1",

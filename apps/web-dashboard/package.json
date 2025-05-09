@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "dotenvx run -f ../../.env -- next dev --turbopack",
     "build": "next build && mv .next/static .next/standalone/apps/web-dashboard/.next/static",
     "_build": "next build && echo 'de-nesting weird .next structure and copying in static assets' && mv .next/standalone .next/standalone_tmp && mv .next/standalone_tmp/apps/web-dashboard .next/standalone && mv .next/static .next/standalone/.next/static",
     "start-prod": "cd .next/standalone && node ./server.js",
