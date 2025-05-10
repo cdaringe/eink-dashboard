@@ -9,4 +9,4 @@ export const routes = [
   route_get_dashboard,
   route_get_public,
   route_fallback,
-];
+] as const;

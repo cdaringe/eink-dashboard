@@ -7,3 +7,4 @@ deno.json
 apps/web-dashboard/.next
 .wireit
 **/.wireit
+chrome
