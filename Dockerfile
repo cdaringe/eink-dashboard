@@ -12,6 +12,7 @@ run tree
 # install
 env PUPPETEER_SKIP_CHROME_DOWNLOAD=true
 env PUPPETEER_SKIP_CHROME_HEADLESS_SHELL_DOWNLOAD=true
+user root
 run --mount=type=cache,id=pnpm,target=/pnpm/store NODE_ENV=development pnpm install --frozen-lockfile
 # @warn this version must match that in apps/dashboard-host/package.json!
 # run set -x && pnpm dlx puppeteer@23.3.1 install chrome --install-deps
