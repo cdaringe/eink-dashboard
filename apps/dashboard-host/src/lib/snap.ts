@@ -1,5 +1,4 @@
 import execa from "execa";
-import waitOn from "wait-on";
 import { State } from "./state";
 import * as sdk from "../lib/";
 
@@ -49,9 +48,26 @@ export async function run(state: State) {
   const waitOnURI =
     `http://localhost:${config.dashboardServer.port}${pathname}`;
   logger.log(`waiting on ${waitOnURI}`);
-  await waitOn({
-    resources: [waitOnURI],
-    timeout: 30_000,
+  let interval: NodeJS.Timeout;
+  await Promise.race([
+    new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("timeout waiting for dashboard server"));
+      }, 30_000);
+    }),
+    new Promise((resolve) => {
+      interval = setInterval(() => {
+        fetch(waitOnURI)
+          .then((res) => {
+            if (res.ok) {
+              clearInterval(interval);
+              resolve(true);
+            }
+          }, () => {});
+      }, 1_000);
+    }),
+  ]).finally(() => {
+    clearInterval(interval);
   });
   const proc = execa(config.snap.scriptBin, [config.snap.scriptEntryFilename], {
     stdio: "inherit",

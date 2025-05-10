@@ -58,12 +58,9 @@
   },
   "dependencies": {
     "@eink-dashboard/common": "workspace:*",
-    "@types/wait-on": "5.3.4",
     "capture-website": "^4.1.0",
     "execa": "^5",
-    "serve-handler": "6.1.5",
-    "ts-pattern": "5.5.0",
-    "wait-on": "8.0.1"
+    "serve-handler": "6.1.5"
   },
   "devDependencies": {
     "@types/finalhandler": "1.2.3",
