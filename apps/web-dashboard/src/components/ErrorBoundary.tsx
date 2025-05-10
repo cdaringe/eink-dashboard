@@ -22,9 +22,11 @@ export class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <div className="error-container" style={{ padding: "8px" }}>
-          <h2 style={{fontSize: '36px'}}>Something went wrong</h2>
+          <h2 style={{ fontSize: "36px" }}>Something went wrong</h2>
           <p>{this.state.error?.message || "Unknown error occurred"}</p>
-          <code style={{fontSize: '10px', lineHeight: '1'}}>{this.state.error?.stack}</code>
+          <code style={{ fontSize: "10px", lineHeight: "1" }}>
+            {this.state.error?.stack}
+          </code>
           <span className="snapshot_ready" />
         </div>
       );

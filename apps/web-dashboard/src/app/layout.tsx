@@ -16,7 +16,6 @@ export default function RootLayout({
       <body>
         <div id="root">
           <ErrorBoundary>
-
             {children}
           </ErrorBoundary>
         </div>

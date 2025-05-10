@@ -6,8 +6,7 @@ export const route = {
   method: "GET",
   path: "/public",
   handler:
-    (_state: sdk.state.State): http.RequestListener =>
-    async (req, res) => {
+    (_state: sdk.state.State): http.RequestListener => async (req, res) => {
       return serveHandler(req, res);
     },
 };

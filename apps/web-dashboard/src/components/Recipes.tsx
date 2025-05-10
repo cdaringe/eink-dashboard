@@ -1,7 +1,6 @@
 "use client";
 import QRCode from "react-qr-code";
 import React from "react";
-import Image from "next/image";
 import { Header } from "./Header";
 
 export const Recipes: React.FC<{
@@ -32,7 +31,7 @@ export const Recipes: React.FC<{
         </header>
         <ul>
           {recipes.map((item) => {
-            const multimedia = item.multimedia.thumbnail
+            const multimedia = item.multimedia.thumbnail;
             const headline = item.headline.main.length > 50
               ? `${item.headline.main.slice(0, 50)}...`
               : item.headline.main;
@@ -45,7 +44,7 @@ export const Recipes: React.FC<{
                   ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      className="w-[100px] ml-1"
+                      className="w-[100px] mr-2"
                       src={multimedia.url}
                       alt="sneak peek"
                       width={100}
@@ -84,8 +83,9 @@ export interface RecipeRoot {
   lead_paragraph: string;
   source: string;
   multimedia: {
-    default: Multimedum; thumbnail?: Multimedum;
-  }
+    default: Multimedum;
+    thumbnail?: Multimedum;
+  };
   headline: Headline;
   keywords: Keyword[];
   pub_date: string;

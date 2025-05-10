@@ -7,7 +7,13 @@ export const streamFile = async (
   req: http.IncomingMessage,
   res: http.ServerResponse,
 ) => {
-  const fileSize = (await fs.stat(ctx.filenameToServe)).size;
+  const stat = await fs.stat(ctx.filenameToServe).catch(() => null);
+  if (!stat) {
+    res.statusCode = 404;
+    res.end("file not found");
+    return;
+  }
+  const fileSize = stat.size;
   const file = await fs.open(ctx.filenameToServe, "r");
   res.setHeader("Content-Type", "image/png");
   res.setHeader("Content-Length", fileSize.toString());

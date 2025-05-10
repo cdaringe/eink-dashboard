@@ -5,8 +5,7 @@ export const route = {
   method: "GET",
   path: "/dashboard",
   handler:
-    (state: sdk.state.State): http.RequestListener =>
-    async (req, res) => {
+    (state: sdk.state.State): http.RequestListener => async (req, res) => {
       const url = new URL(
         req.url!,
         `http://${req.headers.host ?? "http://localhost"}`,

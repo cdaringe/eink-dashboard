@@ -5,8 +5,7 @@ export const route = {
   method: "GET",
   path: "/api/dashboard/refresh",
   handler:
-    (state: sdk.state.State): http.RequestListener =>
-    async (_req, res) => {
+    (state: sdk.state.State): http.RequestListener => async (_req, res) => {
       if (state.isSnapshotRunning) {
         res.statusCode = 409;
         return res.end(

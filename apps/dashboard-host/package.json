@@ -5,8 +5,8 @@
   "scripts": {
     "build:esbuild:host": "esbuild src/bin/host.ts --bundle --platform=node --outfile=dist/bin/host.js",
     "build:esbuild:snap": "esbuild src/bin/snap.ts --bundle --platform=node --outfile=dist/bin/snap.js",
-    "format": "prettier --write .",
     "build": "wireit",
+    "dev": "wireit",
     "start": "wireit",
     "typecheck": "wireit"
   },
@@ -22,6 +22,15 @@
         "dist/web-dashboard/**"
       ],
       "command": "rm -rf dist/web-dashboard || true && mkdir -p dist && mv ../web-dashboard/.next/standalone ./dist/web-dashboard/ && ls -al ./dist/web-dashboard"
+    },
+    "install-chrome": {
+      "command": "if [ ! -d ./chrome ]; then pnpm dlx @puppeteer/browsers install chrome@stable; fi"
+    },
+    "dev": {
+      "dependencies": [
+        "install-chrome"
+      ],
+      "command": "dotenvx run -f ../../.env -- tsx ./src/bin/host.ts"
     },
     "start": {
       "dependencies": [
@@ -59,7 +68,7 @@
   "devDependencies": {
     "@types/finalhandler": "1.2.3",
     "@types/serve-handler": "6.1.4",
-    "esbuild": "^0.23.1",
+    "esbuild": "^0.25.1",
     "npm-run-all2": "6.2.3",
     "puppeteer": "23.3.1",
     "tsx": "^4.19.1",

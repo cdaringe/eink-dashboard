@@ -45,6 +45,7 @@ export type Config = {
     };
     imageBasename: string;
     intervalSeconds: number;
+    scriptBin: string;
     scriptEntryFilename: string;
     timezone?: string;
     writeDirname: string;
@@ -65,18 +66,25 @@ export const createConfig = (config?: Partial<Config>): Config => {
         ...config?.display?.dims,
       },
     },
-    dashboardServer: NODE_ENV ? {
-      bin: "node",
-      cwd: path.resolve(process.cwd(), './dist/web-dashboard/apps/web-dashboard'),
-      args: ['server.js'],
-      port: Number(DASHBOARD_SERVER_PORT),
-    } : {
-      bin: "npm",
-      cwd: path.resolve(process.cwd(), '../web-dashboard'),
+    dashboardServer: NODE_ENV
+      ? {
+        bin: "node",
+        cwd: path.resolve(
+          process.cwd(),
+          "./dist/web-dashboard/apps/web-dashboard",
+        ),
+        args: ["server.js"],
+        port: Number(DASHBOARD_SERVER_PORT),
+      }
+      : {
+        bin: "npm",
+        cwd: path.resolve(process.cwd(), "../web-dashboard"),
         args: [
-          'run','dev'],
-      port: Number(DASHBOARD_SERVER_PORT),
-    },
+          "run",
+          "dev",
+        ],
+        port: Number(DASHBOARD_SERVER_PORT),
+      },
     snap: {
       imageBasename: SNAP_IMAGE_BASENAME,
       timezone: SNAP_TZ,
@@ -86,7 +94,10 @@ export const createConfig = (config?: Partial<Config>): Config => {
         pathname: SNAP_URL_PATHNAME,
       },
       writeDirname: SNAP_WRITE_DIRNAME,
-      scriptEntryFilename: SNAP_SCRIPT_RELATIVE_FILENAME,
+      scriptBin: NODE_ENV ? "node" : "tsx",
+      scriptEntryFilename: NODE_ENV
+        ? SNAP_SCRIPT_RELATIVE_FILENAME
+        : "./src/bin/snap.ts",
       intervalSeconds: Number(SNAP_INTERVAL_S),
       ...config?.snap,
       get grayFilename() {

@@ -5,8 +5,7 @@ export const route = {
   method: "*",
   path: "*",
   handler:
-    (state: sdk.state.State): http.RequestListener =>
-    async (_req, res) => {
+    (state: sdk.state.State): http.RequestListener => async (_req, res) => {
       res.statusCode = 404;
       res.setHeader("Content-Type", "text/html");
       const document = `
@@ -22,12 +21,18 @@ export const route = {
         <p>The requested URL was not found on this server.</p>
         <p>Available routes:</p>
         <ul>
-          ${state.routes
-            .map(
-              (route) => `<li><code>${route.method} ${route.method.match(/get/i) ?
-              `<a href=${route.path}>${route.path}</a>` : route.path}</code></li>`,
-            )
-            .join("")}
+          ${
+        state.routes
+          .map(
+            (route) =>
+              `<li><code>${route.method} ${
+                route.method.match(/get/i)
+                  ? `<a href=${route.path}>${route.path}</a>`
+                  : route.path
+              }</code></li>`,
+          )
+          .join("")
+      }
         </ul>
       </body>
       </html>

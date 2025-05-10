@@ -6,6 +6,7 @@
 import cw from "capture-website";
 import * as sdk from "../lib";
 import execa from "execa";
+const { CHROME_PATH, NODE_ENV } = process.env;
 
 const logger = sdk.logging.createLogger({ level: "info", name: "snap" });
 const config = sdk.config.createConfig();
@@ -17,8 +18,10 @@ async function main() {
   /**
    * Visit the eink-dashboard-host server and take a snapshot of the dashboard.
    */
-  const imageUrl = `${config.snap.url.hostname}:${config.snap.url.port}${config.snap.url.pathname}`;
-  logger.log(`starting snapshot ${imageUrl}`);
+  const imageUrl =
+    `${config.snap.url.hostname}:${config.snap.url.port}${config.snap.url.pathname}`;
+  const headless = !!NODE_ENV;
+  logger.log(`starting snapshot (headless: ${headless}) ${imageUrl}`);
   await cw.file(imageUrl, colorFilename, {
     ...config.display.dims,
     element: "#root",
@@ -28,8 +31,9 @@ async function main() {
     scaleFactor: config.os === "macos" ? 1 : undefined,
     timeout: 60_000 * 2,
     launchOptions: {
-      headless: "new",
+      headless,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      ...(CHROME_PATH ? { executablePath: CHROME_PATH } : {}),
       env: {
         ...process.env,
         TZ: config.snap.timezone,
@@ -43,4 +47,9 @@ async function main() {
   logger.log(`converted to 256 colors ${grayFilename}`);
 }
 
-main().then(() => logger.log("complete"), logger.error);
+main().then(() => logger.log("complete"), (err) => {
+  debugger;
+  logger.error(`snapshot script failed: ${String(err)}`);
+  logger.error(err);
+  process.exit(1);
+});

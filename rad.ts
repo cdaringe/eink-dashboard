@@ -17,7 +17,6 @@ const dockerRun: Task = {
 
 const format: Task = `deno fmt`;
 
-
 const dev: Task = {
   fn: ({ sh }) => sh(`cd apps/dashboard-host && echo $PWD && pnpm run start`),
 };

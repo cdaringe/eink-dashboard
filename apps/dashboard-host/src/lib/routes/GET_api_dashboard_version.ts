@@ -5,8 +5,7 @@ export const route = {
   method: "GET",
   path: "/api/dashboard/version",
   handler:
-    (state: sdk.state.State): http.RequestListener =>
-    async (_req, res) => {
+    (state: sdk.state.State): http.RequestListener => async (_req, res) => {
       res.statusCode = 200;
       res.setHeader("Content-Type", "text/plain");
       const version = state.lastSnapshotDateMs.toString().substr(-12);

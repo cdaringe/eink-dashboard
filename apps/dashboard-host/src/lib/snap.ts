@@ -1,13 +1,13 @@
 import execa from "execa";
 import waitOn from "wait-on";
 import { State } from "./state";
-import * as sdk from '../lib/'
+import * as sdk from "../lib/";
 
 const dashboardOptions = ["airquality", "onion", "recipes"] as const;
 let snapIndex = new Date().getHours();
 
 export async function run(state: State) {
-  const {config, logger} = state;
+  const { config, logger } = state;
   if (state.isSnapshotRunning) {
     return state.logger.error("snapshot workflow already running");
   }
@@ -20,7 +20,7 @@ export async function run(state: State) {
   snapIndex = snapIndex % dashboardOptions.length;
   const option = dashboardOptions[snapIndex];
 
-  const { bin, args , cwd } = config.dashboardServer;
+  const { bin, args, cwd } = config.dashboardServer;
   const dashboardServerProcess = execa(
     bin,
     args,
@@ -46,13 +46,14 @@ export async function run(state: State) {
       dashboardServerProcess.kill(9);
     });
   const pathname = `/dashboard/${option}`;
-  const waitOnURI = `http://localhost:${config.dashboardServer.port}${pathname}`;
+  const waitOnURI =
+    `http://localhost:${config.dashboardServer.port}${pathname}`;
   logger.log(`waiting on ${waitOnURI}`);
   await waitOn({
     resources: [waitOnURI],
     timeout: 30_000,
   });
-  const proc = execa("node", [config.snap.scriptEntryFilename], {
+  const proc = execa(config.snap.scriptBin, [config.snap.scriptEntryFilename], {
     stdio: "inherit",
     env: {
       ...process.env,
@@ -60,7 +61,15 @@ export async function run(state: State) {
       SNAP_URL_PATHNAME: pathname,
     },
   });
-  proc.catch(logger.error).finally(() => {
+  proc.then(
+    () => {
+      logger.log("snapshot script complete");
+    },
+    (err) => {
+      logger.error(`error running snapshot script: ${String(err)}`);
+      logger.error(err);
+    },
+  ).finally(() => {
     state.lastSnapshotDateMs = Date.now();
     state.isSnapshotRunning = false;
     proc.kill(9);

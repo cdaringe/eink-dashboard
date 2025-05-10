@@ -25,9 +25,8 @@ const getData = () => {
         if (!res.ok) {
           console.error(await res.text().catch(() => "UNKNOWN ERROR"));
           throw new Error(res.statusText);
-
         }
-        const result = await  res.json();
+        const result = await res.json();
         return result;
       })
       .then((result) => result as ResponseOk, (err) => {
