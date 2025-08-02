@@ -13,8 +13,7 @@ export const Onion: React.FC<{
   const [isReady, setIsReady] = React.useState(false);
   return (
     <div id="panel_grid" className="onion max-w-[100vw]">
-      <Header />
-      <div className="onion">
+      <div id="panel_1">
         <header className="flex justify-center items-center w-full p-2">
           <Image
             alt="The Onion"
@@ -44,17 +43,8 @@ export const Onion: React.FC<{
             </li>
           ))}
         </ul>
-
-        {
-          /* {(item) => (
-            <article className="p-2">
-              <h2 className="text-xl">{ item.title }</h2>
-              <p>{ item.description }</p>
-              <a href={item.link}>Read more</a>
-            </article>
-          )} */
-        }
       </div>
+      <Header />
     </div>
   );
 };

@@ -55,8 +55,8 @@ body {
   grid-template-rows: 1fr auto;
   grid-template-columns: 1fr;
   grid-template-areas:
-    "panel_1 panel_1"
-    "panel_header panel_header";
+    "panel_1"
+    "panel_header";
 }
 
 #panel_header {
@@ -70,6 +70,7 @@ body {
 
 #panel_1 {
   grid-area: panel_1;
+  overflow: hidden;
 }
 
 #panel_2 {
