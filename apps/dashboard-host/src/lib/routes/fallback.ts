@@ -24,12 +24,17 @@ export const route = {
           ${
         state.routes
           .map(
-            (route) =>
-              `<li><code>${route.method} ${
-                route.method.match(/get/i)
-                  ? `<a href=${route.path}>${route.path}</a>`
-                  : route.path
-              }</code></li>`,
+            (route) => {
+              if ("pathnameDisplay" in route) {
+                return `<li><code>${route.method} ${route.pathnameDisplay}</code></li>`;
+              } else {
+                return `<li><code>${route.method} ${
+                  route.method.match(/get/i)
+                    ? `<a href=${route.path}>${route.path}</a>`
+                    : route.path
+                }</code></li>`;
+              }
+            },
           )
           .join("")
       }

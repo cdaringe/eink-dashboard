@@ -6,13 +6,16 @@
 import cw from "capture-website";
 import * as sdk from "../lib";
 import execa from "execa";
-const { CHROME_PATH, NODE_ENV } = process.env;
+import path from "node:path";
+const { CHROME_PATH, NODE_ENV, SNAP_IMAGE_BASENAME } = process.env;
 
 const logger = sdk.logging.createLogger({ level: "info", name: "snap" });
 const config = sdk.config.createConfig();
 
 async function main() {
-  const grayFilename = config.snap.grayFilename;
+  // Use SNAP_IMAGE_BASENAME if provided, otherwise fall back to config
+  const imageBasename = SNAP_IMAGE_BASENAME || config.snap.imageBasename;
+  const grayFilename = path.join(config.snap.writeDirname, imageBasename);
   const colorFilename = `${grayFilename}.color`;
 
   /**
@@ -48,7 +51,6 @@ async function main() {
 }
 
 main().then(() => logger.log("complete"), (err) => {
-  debugger;
   logger.error(`snapshot script failed: ${String(err)}`);
   logger.error(err);
   process.exit(1);

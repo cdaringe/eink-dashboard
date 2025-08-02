@@ -1,26 +1,26 @@
+import { Dashkind, dashkinds } from "@eink-dashboard/common";
 import * as sdk from "..";
 import http from "node:http";
 
 export const route = {
   method: "GET",
   path: "/dashboard",
-  handler:
-    (state: sdk.state.State): http.RequestListener => async (req, res) => {
-      const url = new URL(
-        req.url!,
-        `http://${req.headers.host ?? "http://localhost"}`,
-      );
-
-      let context: sdk.context.DashboardContext = {
-        filenameToServe: state.config.snap.grayFilename,
-        config: state.config,
-        logger: state.logger,
-        batteryOverlay: url.searchParams.get("batteryoverlay") ?? undefined,
-        textOverlay: url.searchParams.getAll("textoverlay"),
-      };
-
-      context = await sdk.overlays.battery(context);
-      context = await sdk.overlays.text(context);
-      return sdk.request.streamFile(context, req, res);
-    },
+  handler: (state: sdk.state.State): http.RequestListener => {
+    let dashIndex = 0;
+    let currDashboard: Dashkind = dashkinds[0]!;
+    setInterval(function updatePrimaryDashboard() {
+      dashIndex = (dashIndex + 1) % dashkinds.length;
+      currDashboard = dashkinds[dashIndex]!;
+    }, state.config.snap.intervalSeconds);
+    return async (_req, res) => {
+      /**
+       * Return a HTTP 301 redirect to the current dashboard.
+       * This is useful for clients that want to always access the latest dashboard.
+       */
+      res.statusCode = 301;
+      res.setHeader("Location", `/dashboard/${currDashboard}`);
+      res.setHeader("Cache-Control", "no-cache");
+      res.end();
+    };
+  },
 };

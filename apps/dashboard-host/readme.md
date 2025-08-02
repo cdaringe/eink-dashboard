@@ -34,7 +34,15 @@ fine tune the workflow. You may also study the
 ## view it!
 
 Visit the local website, e.g.:
-http://localhost:8000/dashboard?batteryoverlay=33,540,1172,x24
+
+- http://localhost:8000/dashboard?batteryoverlay=33,540,1172,x24 (serves the
+  most recently generated image)
+- http://localhost:8000/dashboard/onion (serves the onion dashboard
+  specifically)
+- http://localhost:8000/dashboard/airquality (serves the air quality dashboard
+  specifically)
+- http://localhost:8000/dashboard/recipes (serves the recipes dashboard
+  specifically)
 
 ## api
 
@@ -53,11 +61,18 @@ Overlays are query-param driven.
 ## architecture
 
 1. The host process--in idle state--is a very thin server that serves:
-   1. e-ink ready images over http
+   1. e-ink ready images over http via `/dashboard` (latest) and
+      `/dashboard/:name` (specific dashboard)
    2. an optional [../web-dashboard](../web-dashboard/) as the source of
       screenshotted e-ink images
-2. On an interval, the host create a child process to capture new snapshots. The
-   snapshot process has few major components, by default:
+2. On an interval (hourly by default), the host generates all dashboard images:
+   - `airquality.png` - Air quality monitoring dashboard
+   - `onion.png` - The Onion news headlines
+   - `recipes.png` - Recipe recommendations
+   - `snapshot.png` - Legacy filename for the most recent image
+3. On-demand generation: If a specific dashboard image is requested but doesn't
+   exist, it's generated automatically
+4. The snapshot process has few major components:
    1. An optional webapp. The webapp is developed in
       [../web-dashboard](../web-dashboard/), but at runtime, only compiled
       static assets are hosted and accessed by the snapshot script. This keeps

@@ -16,11 +16,15 @@ const handleRequest = async (
 
   try {
     const route = state.routes.find(
-      (it) =>
-        req.url && "test" in it
-          ? it.test(req.url)
-          : (it.method === req.method || it.method === "*") &&
-            (it.path === url.pathname || it.path === "*"),
+      (it) => {
+        if ("test" in it) {
+          return req.url && it.test(req.url) &&
+            (it.method === req.method || it.method === "*");
+        } else {
+          return (it.method === req.method || it.method === "*") &&
+            (it.path === url.pathname || it.path === "*");
+        }
+      },
     );
     assert(route, "No hanlder found");
     const handler = route.handler(state);
