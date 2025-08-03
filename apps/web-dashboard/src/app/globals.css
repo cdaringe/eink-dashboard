@@ -18,12 +18,17 @@ body {
 }
 
 #panel_grid {
+  display: grid;
+  height: 1200px;
+  width: 820px;
+}
+#panel_grid {
+  display: grid;
   height: 1200px;
   width: 820px;
 }
 
 #panel_grid.airquality {
-  display: grid;
   grid-template-rows: 0.9fr 1fr 0.9fr 34px;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
@@ -50,8 +55,7 @@ body {
   border: none; /* Optional: Remove iframe border */
 }
 
-#panel_grid.onion {
-  display: grid;
+#panel_grid {
   grid-template-rows: 1fr auto;
   grid-template-columns: 1fr;
   grid-template-areas:

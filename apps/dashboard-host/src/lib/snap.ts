@@ -2,7 +2,12 @@ import execa from "execa";
 import { State } from "./state";
 import * as sdk from "../lib/";
 
-export const dashboardOptions = ["airquality", "onion", "recipes"] as const;
+export const dashboardOptions = [
+  "airquality",
+  "onion",
+  "recipes",
+  "rover",
+] as const;
 export type DashboardName = typeof dashboardOptions[number];
 
 export async function generateSingle(

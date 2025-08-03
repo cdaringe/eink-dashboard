@@ -22,6 +22,10 @@ export default function Home() {
           url: "/dashboard/airquality",
           label: "AirQuality",
           icon: "/globe.svg",
+        }, {
+          url: "/dashboard/rover",
+          label: "Rover",
+          icon: "/globe.svg",
         }].map(({ url, label, icon }) => (
           <Link
             key={url}
