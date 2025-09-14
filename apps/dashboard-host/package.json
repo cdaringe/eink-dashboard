@@ -58,17 +58,17 @@
   },
   "dependencies": {
     "@eink-dashboard/common": "workspace:*",
-    "capture-website": "^4.1.0",
-    "execa": "^5",
+    "capture-website": "^4.2.0",
+    "execa": "^5.1.1",
     "serve-handler": "6.1.5"
   },
   "devDependencies": {
     "@types/finalhandler": "1.2.3",
     "@types/serve-handler": "6.1.4",
-    "esbuild": "^0.25.1",
+    "esbuild": "^0.25.9",
     "npm-run-all2": "6.2.3",
     "puppeteer": "23.3.1",
-    "tsx": "^4.19.1",
+    "tsx": "^4.20.5",
     "typescript": "5.6.2"
   },
   "pnpm": {

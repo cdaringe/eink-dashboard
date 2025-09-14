@@ -4,23 +4,13 @@ import { RoverPhoto } from "@/app/dashboard/rover/page";
 import React from "react";
 import { Header } from "./Header";
 
-function shuffle<T>(arr: T[]): T[] {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
 export const Rover: React.FC<{
   photos: RoverPhoto[];
 }> = ({
   photos,
 }) => {
   const [countReady, setCountReady] = React.useState(0);
-  const shuffled = React.useMemo(() => shuffle(photos), [photos]);
-  const latestPhotos = shuffled.slice(0, 2);
-  const countPhotos = latestPhotos.length;
+  const countPhotos = photos.length;
 
   return (
     <div id="panel_grid" className="rover max-w-[100vw]">
@@ -30,7 +20,7 @@ export const Rover: React.FC<{
         </header>
 
         <div className="grid grid-cols-1 gap-1 pt-0 p-2">
-          {latestPhotos.map((photo) => (
+          {photos.map((photo) => (
             <div key={photo.id} className="rover-photo-container">
               <div className="relative w-full h-[30rem] mb-2">
                 <img

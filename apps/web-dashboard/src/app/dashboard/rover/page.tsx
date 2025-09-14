@@ -44,7 +44,10 @@ async function fetchRoverPhotos(): Promise<Result<RoverPhoto[]>> {
     }
 
     const data: RoverApiResponse = await response.json();
-    return Ok(data.latest_photos);
+    const shuffled = shuffle(data.latest_photos);
+    const latestPhotos = shuffled.slice(0, 2);
+
+    return Ok(latestPhotos);
   } catch (err) {
     return Err(`Failed to fetch rover photos: ${String(err)}`);
   }
@@ -69,3 +72,11 @@ const RoverPage: React.FC = async ({}) => {
 };
 
 export default RoverPage;
+
+function shuffle<T>(arr: T[]): T[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}

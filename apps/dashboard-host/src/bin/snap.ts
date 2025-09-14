@@ -7,7 +7,8 @@ import cw from "capture-website";
 import * as sdk from "../lib";
 import execa from "execa";
 import path from "node:path";
-const { CHROME_PATH, NODE_ENV, SNAP_IMAGE_BASENAME } = process.env;
+const { CHROME_PATH, NODE_ENV, SNAP_IMAGE_BASENAME, PWD = process.cwd() } =
+  process.env;
 
 const logger = sdk.logging.createLogger({ level: "info", name: "snap" });
 const config = sdk.config.createConfig();
@@ -15,7 +16,7 @@ const config = sdk.config.createConfig();
 async function main() {
   // Use SNAP_IMAGE_BASENAME if provided, otherwise fall back to config
   const imageBasename = SNAP_IMAGE_BASENAME || config.snap.imageBasename;
-  const grayFilename = path.join(config.snap.writeDirname, imageBasename);
+  const grayFilename = path.join(PWD, config.snap.writeDirname, imageBasename);
   const colorFilename = `${grayFilename}.color`;
 
   /**
@@ -44,8 +45,10 @@ async function main() {
     },
   });
   logger.log(`snapshot saved to ${colorFilename}`);
-  await execa.command(
-    `convert ${colorFilename} -depth 8 -colors 256 ${grayFilename}`,
+  await execa(
+    `convert`,
+    [colorFilename, "-depth", "8", "-colors", "256", grayFilename],
+    { stdio: "inherit" }
   );
   logger.log(`converted to 256 colors ${grayFilename}`);
 }

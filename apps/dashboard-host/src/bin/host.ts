@@ -26,7 +26,7 @@ const handleRequest = async (
         }
       },
     );
-    assert(route, "No hanlder found");
+    assert(route, "No handler found");
     const handler = route.handler(state);
     return handler(req, res);
   } catch (error) {
