@@ -1,116 +1,31 @@
+/* eslint-disable @next/next/no-img-element */
+"use client";
 import React from "react";
 
-const catNames = [
-  "Clawdia",
-  "Fur-guson",
-  "Meowly Cyrus",
-  "Purrnando",
-  "Catrick Swayze",
-  "Whisker-tine",
-  "Kitty Purry",
-  "Leonardo DiCatprio",
-  "Furcules",
-  "Cat Damon",
-];
-
-const getRandomElement = (arr: string[]) =>
-  arr[Math.floor(Math.random() * arr.length)];
-
-const download = (catName: string) => {
-  const el = document.getElementById("catCanvas") as HTMLCanvasElement;
-  const dataUrl = el.toDataURL("image/png");
-  // Create a temporary anchor element
-  const link = document.createElement("a");
-  link.href = dataUrl;
-  link.download = `cat_${catName}.png`;
-
-  // Append the link to the body (required for Firefox)
-  document.body.appendChild(link);
-
-  // Programmatically click the link to trigger the download
-  link.click();
-
-  // Remove the link from the document
-  document.body.removeChild(link);
+type CatImageProps = {
+  initialImageUrl?: string;
 };
 
-const CatImage = () => {
-  const [imageSrc, setImageSrc] = React.useState<string | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [catName, _setCatName] = React.useState<string>(
-    getRandomElement(catNames),
-  );
+const CatImage = ({ initialImageUrl }: CatImageProps) => {
+  const [isReady, setIsReady] = React.useState(false);
 
-  React.useEffect(() => {
-    async function effect() {
-      try {
-        const response = await (await fetch("/api/cat")).json();
-        const catImgUrlPathname = new URL(response[0].url).pathname;
-        setImageSrc(catImgUrlPathname);
-      } catch (error) {
-        console.error("Error fetching cat image:", error);
-      }
-    }
-    effect();
-  }, []);
-
-  const drawCatWithLabel = (
-    ctx: CanvasRenderingContext2D,
-    img: HTMLImageElement,
-  ) => {
-    ctx.drawImage(img, 0, 0, 500, 500);
-    const imageData = ctx.getImageData(0, 0, 500, 500);
-    const data = imageData.data;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const red = data[i];
-      const green = data[i + 1];
-      const blue = data[i + 2];
-
-      const gray = red * 0.3 + green * 0.59 + blue * 0.11;
-
-      data[i] = gray;
-      data[i + 1] = gray;
-      data[i + 2] = gray;
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-
-    ctx.font = "30px Comic Sans MS";
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 3;
-    ctx.textAlign = "center";
-
-    const x = 250;
-    const y = 450;
-    ctx.strokeText(catName, x, y);
-    ctx.fillText(catName, x, y);
-  };
-
-  React.useEffect(() => {
-    if (imageSrc) {
-      const canvas = document.getElementById("catCanvas") as HTMLCanvasElement;
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
-      img.crossOrigin = "anonymous"; // This can bypass CORS if allowed by the server
-
-      img.onload = () => {
-        if (ctx) {
-          drawCatWithLabel(ctx, img);
-        }
-      };
-
-      img.src = imageSrc!;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageSrc]);
-
+  if (!initialImageUrl) {
+    return (
+      <div className="p-4">
+        <p>No cat image available</p>
+      </div>
+    );
+  }
   return (
-    <div>
-      <canvas id="catCanvas" width="600" height="800"></canvas>
-      <button onClick={() => download(catName)}>Download</button>
-    </div>
+    <img
+      src={initialImageUrl}
+      alt="Random cat"
+      className={[
+        "max-w-full w-full h-full object-cover border border-gray-300 rounded",
+        isReady ? "snapshot_ready" : "",
+      ].join(" ")}
+      onLoad={() => setIsReady(true)}
+    />
   );
 };
 

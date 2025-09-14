@@ -5,7 +5,7 @@ import Image from "next/image";
 const logoprops = {
   id: "panel_logo",
   alt: "logo",
-  className: "w-[24px] ml-1 snapshot_ready object-contain",
+  className: "w-[24px] ml-1 object-contain",
   src: logopng,
 } as const;
 

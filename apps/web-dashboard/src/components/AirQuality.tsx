@@ -34,7 +34,12 @@ const AirQuality: React.FC<
           /* When the logo is shown, we're ready! */
           loadCount >= 4
             // eslint-disable-next-line jsx-a11y/alt-text
-            ? <Image {...props} />
+            ? (
+              <Image
+                {...props}
+                className={`snapshot_ready ${props.className || ""}`}
+              />
+            )
             : <span>Loaded {loadCount}</span>}
       >
       </Header>

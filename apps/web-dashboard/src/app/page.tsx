@@ -26,6 +26,10 @@ export default function Home() {
           url: "/dashboard/rover",
           label: "Rover",
           icon: "/globe.svg",
+        }, {
+          url: "/dashboard/cat",
+          label: "Cat",
+          icon: "/cat.svg",
         }].map(({ url, label, icon }) => (
           <Link
             key={url}

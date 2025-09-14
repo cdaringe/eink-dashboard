@@ -8,10 +8,8 @@ export const Recipes: React.FC<{
 }> = ({
   recipes,
 }) => {
-  const [isReady, setIsReady] = React.useState(false);
-  React.useEffect(() => {
-    setTimeout(() => setIsReady(true), 3000);
-  }, []);
+  const [countReady, setCountReady] = React.useState(0);
+  const isReady = countReady === recipes.length;
   return (
     <div id="panel_grid" className="onion max-w-[100vw]">
       <Header />
@@ -49,6 +47,11 @@ export const Recipes: React.FC<{
                       alt="sneak peek"
                       width={100}
                       height={100}
+                      onLoad={() => {
+                        setCountReady((last) =>
+                          last + 1
+                        );
+                      }}
                     />
                   )
                   : null}

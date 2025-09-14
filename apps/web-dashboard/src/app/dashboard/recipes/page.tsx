@@ -2,49 +2,53 @@ import React from "react";
 import { ok } from "assert";
 import Recipes, { RecipeRoot } from "../../../components/Recipes";
 import { connection } from "next/server";
+import { Err, Ok, Result } from "../../../lib/types";
 
 const { NYT_API_KEY } = process.env;
 
-type ResponseOk = { status: "OK"; response: { docs: RecipeRoot[] } };
+type NYTApiResponse = { response: { docs: RecipeRoot[] } };
 
-type Response =
-  | ResponseOk
-  | { status: "ERROR"; body: unknown };
+async function fetchRecipes(): Promise<Result<RecipeRoot[]>> {
+  "use server";
 
-const getData = () => {
-  if (true) {
+  try {
     ok(NYT_API_KEY, "NYT_API_KEY is not set!");
     const url = new URL(
       "https://api.nytimes.com/svc/search/v2/articlesearch.json",
     );
-    url.searchParams.set("fq", 'typeOfMaterials:("Recipe")');
+    url.searchParams.set("fq", "type:recipe");
     url.searchParams.set("api-key", NYT_API_KEY!);
     url.searchParams.set("sort", "newest");
-    return fetch(url.toString())
-      .then(async (res) => {
-        if (!res.ok) {
-          console.error(await res.text().catch(() => "UNKNOWN ERROR"));
-          throw new Error(res.statusText);
-        }
-        const result = await res.json();
-        return result;
-      })
-      .then((result) => result as ResponseOk, (err) => {
-        return { status: "ERROR", body: String(err) } as Response;
-      });
+
+    const res = await fetch(url.toString());
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => "Unknown error");
+      return Err(
+        `NYT API returned ${res.status}: ${res.statusText}. ${errorText}`,
+      );
+    }
+
+    const result: NYTApiResponse = await res.json();
+    return Ok(result.response.docs);
+  } catch (err) {
+    return Err(`Failed to fetch recipes: ${String(err)}`);
   }
-  // return fetchData();
-};
+}
 
 const RecipePage: React.FC = async ({}) => {
   await connection();
-  const res = await getData();
-  return res.status === "OK" ? <Recipes recipes={res.response.docs} /> : (
-    <div>
-      Error getting Recidives! <br />
-      <pre>{JSON.stringify(res.body, null, 2)}</pre>
-    </div>
-  );
+  const result = await fetchRecipes();
+
+  if (!result.ok) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+        <h2 className="text-red-800 font-semibold">Error Loading Recipes</h2>
+        <p className="text-red-600 mt-2">{result.value}</p>
+      </div>
+    );
+  }
+
+  return <Recipes recipes={result.value} />;
 };
 
 export default RecipePage;

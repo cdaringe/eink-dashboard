@@ -7,6 +7,7 @@ export const dashboardOptions = [
   "onion",
   "recipes",
   "rover",
+  "cat",
 ] as const;
 export type DashboardName = typeof dashboardOptions[number];
 

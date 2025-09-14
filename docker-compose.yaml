@@ -17,6 +17,7 @@ services:
       - PORT=8000
       - SNAP_INTERVAL_S=1800 # 30 minutes
       - NYT_API_KEY=$NYT_API_KEY
+      - CAT_API_KEY=$CAT_API_KEY
 # DISPLAY_WIDTH = "820",
 # DISPLAY_HEIGHT = "1200",
 # SNAP_WRITE_DIRNAME = "./public",

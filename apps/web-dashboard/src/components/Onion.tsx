@@ -25,7 +25,10 @@ export const Onion: React.FC<{
             width={400}
             height={50}
             onLoad={() => {
-              setIsReady(true);
+              setTimeout(() => {
+                // lazy wait a second for the other images to d/l
+                setIsReady(true);
+              }, 1_000);
             }}
           />
         </header>

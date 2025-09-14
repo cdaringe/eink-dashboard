@@ -17,9 +17,10 @@ export const Rover: React.FC<{
 }> = ({
   photos,
 }) => {
-  const [isReady, setIsReady] = React.useState(false);
+  const [countReady, setCountReady] = React.useState(0);
   const shuffled = React.useMemo(() => shuffle(photos), [photos]);
   const latestPhotos = shuffled.slice(0, 2);
+  const countPhotos = latestPhotos.length;
 
   return (
     <div id="panel_grid" className="rover max-w-[100vw]">
@@ -29,20 +30,20 @@ export const Rover: React.FC<{
         </header>
 
         <div className="grid grid-cols-1 gap-1 pt-0 p-2">
-          {latestPhotos.map((photo, index) => (
+          {latestPhotos.map((photo) => (
             <div key={photo.id} className="rover-photo-container">
               <div className="relative w-full h-[30rem] mb-2">
                 <img
                   alt={`Mars photo from ${photo.rover.name} rover - ${photo.camera.full_name}`}
                   className={[
                     "object-cover w-full h-full rounded",
-                    isReady && index === 0 ? "snapshot_ready" : "",
+                    countReady === countPhotos ? "snapshot_ready" : "",
                   ].join(" ")}
                   src={photo.img_src}
                   onLoad={() => {
-                    if (index === 0) {
-                      setIsReady(true);
-                    }
+                    setCountReady((last) =>
+                      last + 1
+                    );
                   }}
                 />
               </div>

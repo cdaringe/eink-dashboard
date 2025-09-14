@@ -1,6 +1,7 @@
 import React from "react";
 import { Rover } from "../../../components/Rover";
 import { connection } from "next/server";
+import { Err, Ok, Result } from "../../../lib/types";
 
 export type RoverPhoto = {
   id: number;
@@ -26,31 +27,45 @@ export type RoverApiResponse = {
   latest_photos: RoverPhoto[];
 };
 
-const RoverPage: React.FC = async ({}) => {
-  await connection();
+async function fetchRoverPhotos(): Promise<Result<RoverPhoto[]>> {
+  "use server";
 
   const apiKey = process.env.NASA_API_KEY || "DEMO_KEY";
-  /**
-   * @see https://api.nasa.gov/
-   */
   const apiUrl =
     `https://api.nasa.gov/mars-photos/api/v1/rovers/perseverance/latest_photos?api_key=${apiKey}`;
 
-  const roverData = await fetch(apiUrl)
-    .then(async (response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data: RoverApiResponse = await response.json();
-      return { ok: true, value: data } as const;
-    })
-    .catch((err) => {
-      return { ok: false, value: String(err) } as const;
-    });
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "Unknown error");
+      return Err(
+        `NASA API returned ${response.status}: ${response.statusText}. ${errorText}`,
+      );
+    }
 
-  return roverData.ok
-    ? <Rover photos={roverData.value.latest_photos} />
-    : <p>Error getting Mars rover photos! {String(roverData.value)}</p>;
+    const data: RoverApiResponse = await response.json();
+    return Ok(data.latest_photos);
+  } catch (err) {
+    return Err(`Failed to fetch rover photos: ${String(err)}`);
+  }
+}
+
+const RoverPage: React.FC = async ({}) => {
+  await connection();
+  const result = await fetchRoverPhotos();
+
+  if (!result.ok) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+        <h2 className="text-red-800 font-semibold">
+          Error Loading Mars Rover Photos
+        </h2>
+        <p className="text-red-600 mt-2">{result.value}</p>
+      </div>
+    );
+  }
+
+  return <Rover photos={result.value} />;
 };
 
 export default RoverPage;
