@@ -69,7 +69,7 @@ export const Recipes: React.FC<{
                   </span>
                   <h2 className="text-xl inline-block">{headline}</h2>
                   {/* <span className="ml-2">// {item.headline.kicker}</span> */}
-                  <p>{paragraph}</p>
+                  <p>{getPlainText(paragraph)}</p>
                 </div>
                 <div>
                   <QRCode
@@ -85,6 +85,12 @@ export const Recipes: React.FC<{
       </div>
     </div>
   );
+};
+
+function getPlainText (html: string): string {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return div.textContent || div.innerText || '';
 };
 
 export interface RecipeRoot {
