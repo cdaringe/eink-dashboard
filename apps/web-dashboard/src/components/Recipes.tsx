@@ -6,9 +6,22 @@ import { Header } from "./Header";
 export const Recipes: React.FC<{
   recipes: RecipeRoot[];
 }> = ({
-  recipes,
+  recipes: rawRecipes,
 }) => {
   const [countReady, setCountReady] = React.useState(0);
+  React.useEffect(() => {
+    const intvl = setInterval(() => {
+      const readyCount = Array.from(document.querySelectorAll(".recipeimg"))
+        .reduce<number>((total: number, el) => {
+          const img = el as HTMLImageElement;
+          const isSettled = img.complete || img.naturalHeight > 1;
+          return total + (isSettled ? 1 : 0);
+        }, 0);
+      setCountReady(readyCount);
+    }, 1000);
+    return () => clearInterval(intvl);
+  }, []);
+  const recipes = rawRecipes.filter((it) => it.multimedia.thumbnail);
   const isReady = countReady === recipes.length;
   return (
     <div id="panel_grid" className="onion max-w-[100vw]">
@@ -42,16 +55,11 @@ export const Recipes: React.FC<{
                   ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      className="w-[100px] mr-2"
+                      className="w-[100px] mr-2 recipeimg"
                       src={multimedia.url}
                       alt="sneak peek"
                       width={100}
                       height={100}
-                      onLoad={() => {
-                        setCountReady((last) =>
-                          last + 1
-                        );
-                      }}
                     />
                   )
                   : null}

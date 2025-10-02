@@ -47,7 +47,13 @@ export async function generateAll(state: State): Promise<void> {
   try {
     logger.log("generating all dashboard images");
     for (const dashboardName of dashboardOptions) {
-      await runSnapshotForDashboard(state, dashboardName);
+      await runSnapshotForDashboard(state, dashboardName).catch((err) => {
+        logger.error(
+          `generating single dashboard failed: ${
+            err instanceof Error ? err.message : String(err)
+          }`,
+        );
+      });
       logger.log(`completed: ${dashboardName}`);
     }
     logger.log("all dashboard generation complete");

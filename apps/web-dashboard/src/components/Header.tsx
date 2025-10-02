@@ -21,9 +21,13 @@ export const Header: React.FC<{
     setIsClient(true);
   }, []);
   return (
-    <header id="panel_header" style={{
-      boxShadow: "black 0px 5px 15px"
-    }} className="flex items-center justify-center">
+    <header
+      id="panel_header"
+      style={{
+        boxShadow: "black 0px 5px 15px",
+      }}
+      className="flex items-center justify-center"
+    >
       {logo
         ? logo(logoprops, Image) // eslint-disable-next-line jsx-a11y/alt-text
         : <Image {...logoprops} />}

@@ -48,7 +48,7 @@ async function main() {
   await execa(
     `convert`,
     [colorFilename, "-depth", "8", "-colors", "256", grayFilename],
-    { stdio: "inherit" }
+    { stdio: "inherit" },
   );
   logger.log(`converted to 256 colors ${grayFilename}`);
 }
