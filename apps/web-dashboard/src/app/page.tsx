@@ -23,8 +23,8 @@ export default function Home() {
           label: "AirQuality",
           icon: "/globe.svg",
         }, {
-          url: "/dashboard/rover",
-          label: "Rover",
+          url: "/dashboard/nasa",
+          label: "NASA",
           icon: "/globe.svg",
         }, {
           url: "/dashboard/cat",

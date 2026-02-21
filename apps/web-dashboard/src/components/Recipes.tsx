@@ -87,11 +87,11 @@ export const Recipes: React.FC<{
   );
 };
 
-function getPlainText (html: string): string {
-  const div = document.createElement('div');
+function getPlainText(html: string): string {
+  const div = document.createElement("div");
   div.innerHTML = html;
-  return div.textContent || div.innerText || '';
-};
+  return div.textContent || div.innerText || "";
+}
 
 export interface RecipeRoot {
   abstract: string;

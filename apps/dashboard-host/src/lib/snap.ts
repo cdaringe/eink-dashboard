@@ -6,7 +6,7 @@ export const dashboardOptions = [
   "airquality",
   "onion",
   "recipes",
-  "rover",
+  "nasa",
   "cat",
 ] as const;
 export type DashboardName = typeof dashboardOptions[number];
