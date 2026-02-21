@@ -4,9 +4,15 @@ import { ApodEntry } from "@/app/dashboard/nasa/page";
 import React from "react";
 import { Header } from "./Header";
 
+const formatRetry = (ms: number): string => {
+  const minutes = Math.ceil(ms / 60_000);
+  return minutes <= 1 ? "~1 min" : `~${minutes} min`;
+};
+
 export const NasaApod: React.FC<{
   entry: ApodEntry;
-}> = ({ entry }) => {
+  retryInMs: number | undefined;
+}> = ({ entry, retryInMs }) => {
   const [ready, setReady] = React.useState(false);
   const imageUrl = entry.hdurl ?? entry.url;
 
@@ -35,6 +41,11 @@ export const NasaApod: React.FC<{
             {entry.copyright ? ` · ${entry.copyright}` : ""}
           </p>
           <p className="text-xs mt-2 line-clamp-4">{entry.explanation}</p>
+          {retryInMs !== undefined && (
+            <p className="text-xs mt-1 italic text-gray-500">
+              Cached · next refresh in {formatRetry(retryInMs)}
+            </p>
+          )}
         </div>
       </div>
       <Header />
