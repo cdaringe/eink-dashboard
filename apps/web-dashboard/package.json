@@ -13,7 +13,7 @@
   "dependencies": {
     "@eink-dashboard/common": "workspace:*",
     "@extractus/feed-extractor": "7.1.7",
-    "next": "15.5.3",
+    "next": "15.5.12",
     "react": "^19",
     "react-dom": "^19",
     "react-qr-code": "2.0.18"
@@ -23,7 +23,7 @@
     "@types/react": "^18.3.24",
     "@types/react-dom": "^18.3.7",
     "eslint": "^8.57.1",
-    "eslint-config-next": "15.0.2",
+    "eslint-config-next": "15.5.12",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2"
